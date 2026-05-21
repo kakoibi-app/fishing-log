@@ -207,9 +207,13 @@ useEffect(() => {
     ...form
   };
 
-  await addDoc(collection(db, 'records'), newData);
+  const docRef = await addDoc(collection(db, 'records'), newData);
 
-  setRecords(prev => [...prev, { ...newData, id: Date.now().toString() }]);
+setRecords(prev => [
+  ...prev,
+  { ...newData, id: docRef.id } // ←これ
+]);
+
 }
 
   // ✅ これ絶対入れる
