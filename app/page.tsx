@@ -12,7 +12,6 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import { deleteDoc } from 'firebase/firestore';
 import { signInWithRedirect } from 'firebase/auth';
-import { getRedirectResult } from 'firebase/auth';
 import { onAuthStateChanged } from "firebase/auth";
 import { setPersistence, browserLocalPersistence } from "firebase/auth";
 
