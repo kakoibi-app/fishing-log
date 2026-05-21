@@ -335,8 +335,8 @@ if (!user) {
               position={{ lat: r.lat, lng: r.lng }}
               
               onClick={() => {
-                setSelectedRecord(r);
-                setEditingRecord(r);
+                setSelectedRecord({ ...r });
+                setEditingRecord({ ...r });
               }}
 
             />
@@ -469,7 +469,7 @@ if (!user) {
       
       <button
         onClick={() => {
-          setForm(selectedRecord);
+          setForm({ ...selectedRecord });
           setShowForm(true);
           setSelectedRecord(null);
         }}
