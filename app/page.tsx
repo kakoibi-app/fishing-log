@@ -160,6 +160,9 @@ useEffect(() => {
   setShowForm(false);
   setCurrentPos(null);
 
+  // ✅ これ追加
+  setEditingRecord(null);
+
   setForm({
     fishType: '',
     size: '',
@@ -172,13 +175,13 @@ useEffect(() => {
 };
 
 
+
     const handleSave = async () => {
 
-  // ✅ 編集の場合（currentPosなくてもOK）
   if (editingRecord) {
     const newData = {
       userId: user.uid,
-      lat: editingRecord.lat,  // ←これ重要
+      lat: editingRecord.lat,
       lng: editingRecord.lng,
       ...form
     };
@@ -187,13 +190,12 @@ useEffect(() => {
     await updateDoc(ref, newData);
 
     setRecords(prev =>
-      prev.map(r => r.id === editingRecord.id ? { ...r, ...newData } : r)
+      prev.map(r =>
+        r.id === editingRecord.id ? { ...r, ...newData } : r
+      )
     );
-
-    setEditingRecord(null);
   }
   else {
-    // ✅ 新規（currentPos必要）
     if (!currentPos) return;
 
     const newData = {
@@ -208,7 +210,8 @@ useEffect(() => {
     setRecords(prev => [...prev, newData]);
   }
 
-  if (navigator.vibrate) navigator.vibrate(100);
+  // ✅ これ絶対入れる
+  setEditingRecord(null);
 
   setShowForm(false);
   setCurrentPos(null);
