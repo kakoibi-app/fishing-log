@@ -11,6 +11,9 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 import { doc, updateDoc } from 'firebase/firestore';
 import { deleteDoc } from 'firebase/firestore';
+import { signInWithRedirect } from 'firebase/auth';
+import { getRedirectResult } from 'firebase/auth';
+import { onAuthStateChanged } from "firebase/auth";
 
 type Record = {
   id?: string
@@ -61,26 +64,50 @@ export default function Home() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = async () => {
-    if (isLoggingIn) return; // 二重防止
+  if (isLoggingIn) return;
 
-    try {
-      setIsLoggingIn(true);
+  try {
+    setIsLoggingIn(true);
 
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
+    const provider = new GoogleAuthProvider();
 
-      setUser(result.user);
-    } catch (error: any) {
-      console.error(error);
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
+    await signInWithRedirect(auth, provider);
+
+    // ✅ ここで setUser はしない
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsLoggingIn(false);
+  }
+};
 
   const handleLogout = async () => {
     await signOut(auth);
     setUser(null);
   };
+  useEffect(() => {
+  const checkAuth = async () => {
+    try {
+      const result = await getRedirectResult(auth);
+
+      if (result && result.user) {
+        setUser(result.user);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // ✅ redirect結果確認
+  checkAuth();
+
+  // ✅ 常にログイン状態監視
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    setUser(user);
+  });
+
+  return () => unsubscribe();
+}, []);
 
   useEffect(() => {
     if (!user) return;
