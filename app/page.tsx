@@ -29,6 +29,10 @@ type Record = {
   userId: string;
 };
 
+useEffect(() => {
+  sessionStorage.removeItem("reloaded");
+}, []);
+
 const containerStyle = {
   width: '100%',
   height: 'calc(100vh - 56px)',
@@ -90,8 +94,16 @@ export default function Home() {
   
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // ✅ ログイン直後に1回だけリロード
+      if (!sessionStorage.getItem(" reloaded")) {
+        sessionStorage.setItem("reloaded", "true");
+        window.location.reload();
+      }
+    }
+
     setUser(user);
-    setLoading(false); // ←これ追加
+    setLoading(false);
   });
 
   return () => unsubscribe();
