@@ -7,13 +7,13 @@ import { db } from '../src/lib/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 import { auth } from '../src/lib/firebase';
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
+await setPersistence(auth, browserLocalPersistence);
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 import { doc, updateDoc } from 'firebase/firestore';
 import { deleteDoc } from 'firebase/firestore';
-import { signInWithRedirect } from 'firebase/auth';
 import { onAuthStateChanged } from "firebase/auth";
-import { setPersistence, browserLocalPersistence } from "firebase/auth";
 
 type Record = {
   id?: string
@@ -72,14 +72,9 @@ export default function Home() {
 
     const provider = new GoogleAuthProvider();
 
-    try {
-      await setPersistence(auth, browserLocalPersistence);
-    } catch (e) {
-      console.warn("persistence失敗（無視してOK）", e);
-    }
+    const result = await signInWithPopup(auth, provider);
 
-    // ✅ 必ずここは実行される
-    await signInWithRedirect(auth, provider);
+    setUser(result.user);
 
   } catch (error) {
     console.error(error);
