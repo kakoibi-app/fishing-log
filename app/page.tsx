@@ -72,9 +72,13 @@ export default function Home() {
 
     const provider = new GoogleAuthProvider();
 
-    // ✅ ★これ追加★
-    await setPersistence(auth, browserLocalPersistence);
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+    } catch (e) {
+      console.warn("persistence失敗（無視してOK）", e);
+    }
 
+    // ✅ 必ずここは実行される
     await signInWithRedirect(auth, provider);
 
   } catch (error) {
@@ -258,7 +262,12 @@ export default function Home() {
           <h1 className="text-xl font-bold text-gray-800 mb-4">釣果ログ</h1>
           <button
             disabled={isLoggingIn}
-            onClick={handleLogin}
+            
+onClick={() => {
+  console.log("クリックされた");
+  handleLogin();
+}}
+
             className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
           >
             Googleでログイン
