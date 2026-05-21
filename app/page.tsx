@@ -196,19 +196,21 @@ useEffect(() => {
     );
   }
   else {
-    if (!currentPos) return;
+  const pos = currentPos || editingRecord;
 
-    const newData = {
-      userId: user.uid,
-      lat: currentPos.lat,
-      lng: currentPos.lng,
-      ...form
-    };
+  if (!pos) return;
 
-    await addDoc(collection(db, 'records'), newData);
+  const newData = {
+    userId: user.uid,
+    lat: pos.lat,
+    lng: pos.lng,
+    ...form
+  };
 
-    setRecords(prev => [...prev, newData]);
-  }
+  await addDoc(collection(db, 'records'), newData);
+
+  setRecords(prev => [...prev, { ...newData, id: Date.now().toString() }]);
+}
 
   // ✅ これ絶対入れる
   
@@ -356,27 +358,6 @@ if (!user) {
           )}
         </GoogleMap>
       </LoadScript>
-
-      {/* ✅ フォーム復活 */}
-      {currentPos && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg">
-          
-        <input
-          autoFocus
-          className="w-full border border-gray-300 bg-white p-2 rounded text-gray-900"
-          placeholder="魚種"
-          value={form.fishType}
-          onChange={(e)=>setForm({...form,fishType:e.target.value})}
-        />
-
-          <button
-            onClick={handleSave}
-            className="w-full bg-blue-600 text-white p-2 rounded"
-          >
-            保存
-          </button>
-        </div>
-      )}
 
       {/* トースト */}
       {toast && (
