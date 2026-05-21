@@ -160,8 +160,8 @@ useEffect(() => {
   setShowForm(false);
   setCurrentPos(null);
 
-  // ✅ これ追加
-  setEditingRecord(null);
+  setEditingRecord(null);  // ←重要
+  setSelectedRecord(null); // ←追加
 
   setForm({
     fishType: '',
@@ -211,7 +211,10 @@ useEffect(() => {
   }
 
   // ✅ これ絶対入れる
-  setEditingRecord(null);
+  
+setEditingRecord(null);
+setSelectedRecord(null);
+
 
   setShowForm(false);
   setCurrentPos(null);
@@ -227,18 +230,18 @@ useEffect(() => {
   });
 };
   const handleDelete = async () => {
-    if (!selectedRecord) return;
+  if (!selectedRecord?.id) return;
 
-    const ref = doc(db, 'records', selectedRecord.id);
+  const ref = doc(db, 'records', selectedRecord.id);
+  await deleteDoc(ref);
 
-    await deleteDoc(ref);
+  setRecords(prev => prev.filter(r => r.id !== selectedRecord.id));
 
-    setRecords(prev => prev.filter(r => r.id !== selectedRecord.id));
+  setSelectedRecord(null);
+  setEditingRecord(null); // ←これ追加
 
-    setSelectedRecord(null);
-
-    if (navigator.vibrate) navigator.vibrate(200);
-  };
+  if (navigator.vibrate) navigator.vibrate(200);
+};
 
   const getCurrentLocation = () => {
   navigator.geolocation.getCurrentPosition((pos) => {
@@ -339,7 +342,6 @@ if (!user) {
               
               onClick={() => {
                 setSelectedRecord({ ...r });
-                setEditingRecord({ ...r });
               }}
 
             />
@@ -472,6 +474,7 @@ if (!user) {
       
       <button
         onClick={() => {
+          setEditingRecord({ ...selectedRecord }); // ←ここで初めて編集状態に入る
           setForm({ ...selectedRecord });
           setShowForm(true);
           setSelectedRecord(null);
