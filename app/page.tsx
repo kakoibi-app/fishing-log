@@ -14,6 +14,7 @@ import { deleteDoc } from 'firebase/firestore';
 import { signInWithRedirect } from 'firebase/auth';
 import { getRedirectResult } from 'firebase/auth';
 import { onAuthStateChanged } from "firebase/auth";
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
 
 type Record = {
   id?: string
@@ -71,9 +72,11 @@ export default function Home() {
 
     const provider = new GoogleAuthProvider();
 
+    // ✅ ★これ追加★
+    await setPersistence(auth, browserLocalPersistence);
+
     await signInWithRedirect(auth, provider);
 
-    // ✅ ここで setUser はしない
   } catch (error) {
     console.error(error);
   } finally {
