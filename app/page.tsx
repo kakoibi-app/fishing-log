@@ -48,6 +48,7 @@ export default function Home() {
   const [filter, setFilter] = useState('all');
   const [toast, setToast] = useState('');
   const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
   fishType: '',
   size: '',
@@ -92,29 +93,16 @@ export default function Home() {
     await signOut(auth);
     setUser(null);
   };
-  useEffect(() => {
-  const checkAuth = async () => {
-    try {
-      const result = await getRedirectResult(auth);
-
-      if (result && result.user) {
-        setUser(result.user);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // ✅ redirect結果確認
-  checkAuth();
-
-  // ✅ 常にログイン状態監視
+  
+useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     setUser(user);
+    setLoading(false); // ←これ追加
   });
 
   return () => unsubscribe();
 }, []);
+
 
   useEffect(() => {
     if (!user) return;
@@ -255,27 +243,32 @@ export default function Home() {
   });
 };
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-300 to-blue-500">
-        <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
-          <h1 className="text-xl font-bold text-gray-800 mb-4">釣果ログ</h1>
-          <button
-            disabled={isLoggingIn}
-            
-onClick={() => {
-  console.log("クリックされた");
-  handleLogin();
-}}
+  // ✅ まずローディング判定
+if (loading) {
+  return (
+    <div className="flex items-center justify-center h-screen">
+      読み込み中...
+    </div>
+  );
+}
 
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
-          >
-            Googleでログイン
-          </button>
-        </div>
+// ✅ その後でログイン判定
+if (!user) {
+  return (
+    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-300 to-blue-500">
+      <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
+        <h1 className="text-xl font-bold text-gray-800 mb-4">釣果ログ</h1>
+        <button
+          disabled={isLoggingIn}
+          onClick={handleLogin}
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
+        >
+          Googleでログイン
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <>
