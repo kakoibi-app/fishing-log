@@ -278,38 +278,10 @@ if (!user) {
           <img
             src="/images/logo-white.png"
             alt="logo"
-            className="w-28 h-28 object-contain drop-shadow-2xl"
+            className="w-35 h-35 object-contain drop-shadow-2xl"
           />
         </div>
 
-        {/* title */}
-        <h1
-          className="
-          text-white
-          text-5xl
-          font-black
-          tracking-wide
-          drop-shadow-xl
-          "
-        >
-          釣りマップ
-        </h1>
-
-        {/* subtitle */}
-        <p
-          className="
-          mt-6
-          text-white/90
-          text-xl
-          leading-relaxed
-          font-medium
-          drop-shadow-lg
-          "
-        >
-          釣り場を探して、
-          <br />
-          もっと釣りを楽しもう。
-        </p>
       </div>
 
       {/* ===== Bottom Sheet ===== */}
@@ -392,17 +364,6 @@ if (!user) {
 
           メールアドレスでログイン
         </button>
-
-        {/* guest */}
-        <div className="flex items-center gap-4 mt-8">
-          <div className="flex-1 h-px bg-slate-300" />
-
-          <button className="text-blue-600 font-bold text-lg">
-            ゲストで始める
-          </button>
-
-          <div className="flex-1 h-px bg-slate-300" />
-        </div>
 
         {/* features */}
         <div className="grid grid-cols-3 gap-4 mt-10">
