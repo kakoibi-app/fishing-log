@@ -280,7 +280,12 @@ setActiveRecord(null);
 
       {/* フォーム */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-30">
+        
+<div
+  className="fixed inset-0 bg-black/40 flex items-center justify-center z-30 pointer-events-auto"
+  onClick={(e) => e.stopPropagation()} // ←追加
+>
+
           <div className="bg-white p-4 rounded w-80">
             <input
               className="w-full border p-2 mb-2"
@@ -288,9 +293,17 @@ setActiveRecord(null);
               value={form.fishType}
               onChange={(e) => setForm({ ...form, fishType: e.target.value })}
             />
-            <button onClick={save} className="w-full bg-blue-600 text-white py-2">
-              保存
-            </button>
+            
+<button
+  onClick={() => {
+    console.log("保存クリック確認");
+    save();
+  }}
+  className="w-full bg-blue-600 text-white py-2"
+>
+  保存
+</button>
+
             <button onClick={resetState} className="w-full mt-2">
               キャンセル
             </button>
