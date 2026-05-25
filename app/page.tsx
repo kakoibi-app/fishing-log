@@ -134,7 +134,9 @@ export default function Home() {
     const ref = doc(db, 'records', activeRecord.id);
 
     const updatedData = {
-      ...activeRecord, // ←これが超重要
+      lat: activeRecord.lat,
+      lng: activeRecord.lng,
+      userId: activeRecord.userId,
       ...form,
     };
 
@@ -142,12 +144,16 @@ export default function Home() {
 
     setRecords((prev) =>
       prev.map((r) =>
-        r.id === activeRecord.id ? updatedData : r
+        r.id === activeRecord.id
+          ? { ...r, ...updatedData }
+          : r
       )
     );
 
+    console.log("更新成功");
+
   } catch (error) {
-    console.error("更新エラー:", error);
+    console.error("更新失敗", error);
   }
 }
 // ✅ 追加する関数（handleSaveの外）
