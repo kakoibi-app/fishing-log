@@ -293,7 +293,7 @@ if (!user) {
         backdrop-blur-2xl
         rounded-t-[36px]
         pt-7 pb-10 px-6
-        shadow-2xl
+        shadow-lg
         "
       >
         {/* Google Login */}
@@ -469,7 +469,7 @@ if (!user) {
   {/* add */}
   <button
     onClick={() => setMode('new')}
-    className="w-16 h-16 rounded-full bg-blue-600 text-white text-3xl shadow-2xl flex items-center justify-center active:scale-95"
+    className="w-16 h-16 rounded-full bg-blue-600 text-white text-3xl shadow-lg flex items-center justify-center active:scale-95"
   >
     ＋
   </button>
@@ -537,7 +537,7 @@ if (!user) {
               onClick={() => setSelected(r)}
               icon={{
                 url: "/images/fish-marker.png",
-                scaledSize: new google.maps.Size(36, 36),
+                scaledSize: new google.maps.Size(28, 28),
                 anchor: new google.maps.Point(18, 18), // 中央に合わせる
               }}
             />
@@ -581,7 +581,7 @@ if (!user) {
 
       {selected && (
   <div className="absolute bottom-24 left-4 right-4 z-30">
-    <div className="bg-white/95 backdrop-blur-xl rounded-[28px] shadow-2xl px-5 py-4">
+    <div className="bg-white rounded-2xl shadow-lg px-5 py-4">
 
       {/* header */}
       <div className="flex items-center justify-between">
@@ -676,7 +676,7 @@ if (!user) {
           rounded-t-[36px]
           sm:rounded-[36px]
           p-6
-          shadow-2xl
+          shadow-lg
           max-h-[90vh]
           overflow-y-auto
           ">
