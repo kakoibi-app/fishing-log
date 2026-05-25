@@ -122,11 +122,8 @@ export default function Home() {
       }
 
       if (mode === 'edit' && selected) {
-        console.log("mode:", mode);
-console.log("selected:", selected);
-
-if (mode === 'edit' && selected) {
   console.log("💥 edit処理入った");
+  console.log("selected:", selected);
 
   const ref = doc(db, 'records', selected.id);
 
@@ -141,7 +138,7 @@ if (mode === 'edit' && selected) {
 
   console.log("✅ DB更新成功");
 }
-      }
+
     } catch (e) {
       console.error("保存エラー", e);
     }
