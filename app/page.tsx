@@ -455,7 +455,7 @@ if (!user) {
       </div>
 
       {/* ===== Google Map ===== */}
-
+    {!mode && (
       <LoadScript
   googleMapsApiKey={
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
@@ -530,6 +530,7 @@ draggable: !mode,
     </GoogleMap>
   </div> {/* ✅ ← これを追加 */}
 </LoadScript>
+)}
 
       {/* ===== Selected Card ===== */}
 
@@ -670,6 +671,7 @@ draggable: !mode,
       {/* ===== Modal ===== */}
 
       {(mode === 'new' || mode === 'edit') && (
+        
         <div className="
         fixed
         inset-0
