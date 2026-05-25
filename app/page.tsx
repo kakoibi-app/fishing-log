@@ -254,7 +254,9 @@ setForm({
   depth: activeRecord.depth || '',
   rig: activeRecord.rig || '',
   comment: activeRecord.comment || '',
-  date: activeRecord.date || '',
+  date: activeRecord.date
+    ? new Date(activeRecord.date).toISOString().slice(0, 16)
+    : new Date().toISOString().slice(0, 16),
 });
 setShowForm(true);
 setActiveRecord(null);
