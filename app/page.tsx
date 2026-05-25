@@ -251,48 +251,230 @@ export default function Home() {
 
   /* ===== Login ===== */
 
-  if (!user) {
-    return (
-      <div className="relative h-screen overflow-hidden bg-gradient-to-br from-sky-400 via-blue-500 to-blue-700 flex items-center justify-center px-6">
-        <div className="absolute inset-0 bg-black/10" />
+if (!user) {
+  return (
+    <div
+      className="
+      relative
+      h-screen
+      overflow-hidden
+      flex
+      flex-col
+      justify-between
+      "
+      style={{
+        backgroundImage: "url('/images/login-bg.png')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-blue-900/10 to-blue-950/30" />
 
-        <div className="relative z-10 w-full max-w-sm rounded-[36px] bg-white/90 backdrop-blur-xl p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <div className="text-6xl mb-4">🎣</div>
+      {/* ===== Top ===== */}
+      <div className="relative z-10 pt-28 px-8 text-center">
+        {/* logo */}
+        <div className="flex justify-center mb-6">
+          <img
+            src="/images/logo-white.png"
+            alt="logo"
+            className="w-28 h-28 object-contain drop-shadow-2xl"
+          />
+        </div>
 
-            <h1 className="text-4xl font-black text-slate-800">
-              Fishing Log
-            </h1>
+        {/* title */}
+        <h1
+          className="
+          text-white
+          text-6xl
+          font-black
+          tracking-wide
+          drop-shadow-xl
+          "
+        >
+          釣りマップ
+        </h1>
 
-            <p className="text-slate-500 mt-3 leading-relaxed">
-              釣果を記録して、
+        {/* subtitle */}
+        <p
+          className="
+          mt-6
+          text-white/90
+          text-xl
+          leading-relaxed
+          font-medium
+          drop-shadow-lg
+          "
+        >
+          釣り場を探して、
+          <br />
+          もっと釣りを楽しもう。
+        </p>
+      </div>
+
+      {/* ===== Bottom Sheet ===== */}
+      <div
+        className="
+        relative
+        z-10
+        bg-white/92
+        backdrop-blur-2xl
+        rounded-t-[48px]
+        px-7
+        pt-8
+        pb-10
+        shadow-2xl
+        "
+      >
+        {/* Google Login */}
+        <button
+          onClick={login}
+          className="
+          w-full
+          h-20
+          rounded-[28px]
+          bg-gradient-to-r
+          from-blue-500
+          to-blue-600
+          text-white
+          text-2xl
+          font-bold
+          shadow-2xl
+          active:scale-[0.98]
+          transition
+          flex
+          items-center
+          justify-center
+          gap-4
+          "
+        >
+          <div
+            className="
+            h-12
+            w-12
+            rounded-full
+            bg-white
+            flex
+            items-center
+            justify-center
+            text-2xl
+            "
+          >
+            G
+          </div>
+
+          Googleでログイン
+        </button>
+
+        {/* mail login */}
+        <button
+          className="
+          mt-6
+          w-full
+          h-20
+          rounded-[28px]
+          bg-white
+          border
+          border-slate-200
+          text-slate-800
+          text-2xl
+          font-bold
+          shadow-lg
+          active:scale-[0.98]
+          transition
+          flex
+          items-center
+          justify-center
+          gap-4
+          "
+        >
+          <span className="text-3xl">✉️</span>
+
+          メールアドレスでログイン
+        </button>
+
+        {/* guest */}
+        <div className="flex items-center gap-4 mt-8">
+          <div className="flex-1 h-px bg-slate-300" />
+
+          <button className="text-blue-600 font-bold text-lg">
+            ゲストで始める
+          </button>
+
+          <div className="flex-1 h-px bg-slate-300" />
+        </div>
+
+        {/* features */}
+        <div className="grid grid-cols-3 gap-4 mt-10">
+          <div className="text-center">
+            <div className="text-5xl mb-3">📍</div>
+
+            <h3 className="font-bold text-slate-800 text-lg">
+              釣り場を探す
+            </h3>
+
+            <p className="text-sm text-slate-500 mt-2 leading-relaxed">
+              地図から
               <br />
-              自分だけの釣りマップを作ろう。
+              ポイント検索
             </p>
           </div>
 
-          <button
-            onClick={login}
-            className="
-            w-full
-            rounded-2xl
-            bg-blue-600
-            hover:bg-blue-700
-            active:scale-[0.98]
-            transition
-            text-white
-            py-4
-            font-bold
-            text-lg
-            shadow-xl
-            "
-          >
-            Googleでログイン
-          </button>
+          <div className="text-center">
+            <div className="text-5xl mb-3">🐟</div>
+
+            <h3 className="font-bold text-slate-800 text-lg">
+              釣果を記録
+            </h3>
+
+            <p className="text-sm text-slate-500 mt-2 leading-relaxed">
+              サイズや
+              <br />
+              場所を保存
+            </p>
+          </div>
+
+          <div className="text-center">
+            <div className="text-5xl mb-3">📊</div>
+
+            <h3 className="font-bold text-slate-800 text-lg">
+              情報共有
+            </h3>
+
+            <p className="text-sm text-slate-500 mt-2 leading-relaxed">
+              釣果や
+              <br />
+              ポイント共有
+            </p>
+          </div>
         </div>
+
+        {/* footer */}
+        <p
+          className="
+          text-center
+          text-slate-500
+          text-sm
+          leading-relaxed
+          mt-10
+          "
+        >
+          ログインすることで、
+          <span className="text-blue-600 font-semibold">
+            利用規約
+          </span>
+          と
+          <span className="text-blue-600 font-semibold">
+            プライバシーポリシー
+          </span>
+          に
+          <br />
+          同意したものとみなされます。
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="relative h-screen overflow-hidden bg-black">
