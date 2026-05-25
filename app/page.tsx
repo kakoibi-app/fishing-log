@@ -276,7 +276,7 @@ if (!user) {
         {/* logo */}
         <div className="flex justify-center mb-6">
           <img
-            src="/images/logo-white.png"
+            src="images/logo-white.png"
             alt="logo"
             className="w-28 h-28 object-contain drop-shadow-2xl"
           />
@@ -407,7 +407,7 @@ if (!user) {
         {/* features */}
         <div className="grid grid-cols-3 gap-4 mt-10">
           <div className="text-center">
-            <div className="text-5xl mb-3">📍</div>
+            <div className="text-2xl mb-3">📍</div>
 
             <h3 className="font-bold text-slate-800 text-lg">
               釣り場を探す
@@ -421,7 +421,7 @@ if (!user) {
           </div>
 
           <div className="text-center">
-            <div className="text-5xl mb-3">🐟</div>
+            <div className="text-2xl mb-3">🐟</div>
 
             <h3 className="font-bold text-slate-800 text-lg">
               釣果を記録
@@ -435,7 +435,7 @@ if (!user) {
           </div>
 
           <div className="text-center">
-            <div className="text-5xl mb-3">📊</div>
+            <div className="text-2xl mb-3">📊</div>
 
             <h3 className="font-bold text-slate-800 text-lg">
               情報共有
