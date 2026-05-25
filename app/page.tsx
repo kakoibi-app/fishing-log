@@ -68,24 +68,23 @@ export default function Home() {
 
   /* ===== Fetch ===== */
   useEffect(() => {
-    if (!user) return;
+  fetchRecords();
+}, [user]);
+  const fetchRecords = async () => {
+  if (!user) return;
 
-    const fetch = async () => {
-      const q = query(
-        collection(db, 'records'),
-        where('userId', '==', user.uid)
-      );
+  const q = query(
+    collection(db, 'records'),
+    where('userId', '==', user.uid)
+  );
 
-      const snap = await getDocs(q);
+  const snap = await getDocs(q);
 
-      const data: any[] = [];
-      snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
+  const data: any[] = [];
+  snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
 
-      setRecords(data);
-    };
-
-    fetch();
-  }, [user]);
+  setRecords(data);
+};
 
   /* ===== Map Click（新規） ===== */
   const handleMapClick = (e: any) => {
@@ -137,6 +136,7 @@ export default function Home() {
   await updateDoc(ref, updateData);
 
   console.log("✅ DB更新成功");
+  await fetchRecords();
 }
 
     } catch (e) {
