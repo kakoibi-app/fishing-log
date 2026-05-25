@@ -130,22 +130,25 @@ export default function Home() {
     }
 
     if (mode === 'edit' && activeRecord) {
-  const ref = doc(db, 'records', activeRecord.id);
+  try {
+    const ref = doc(db, 'records', activeRecord.id);
 
-  const updatedData = {
-    ...activeRecord,
-    ...form,
-  };
+    const updatedData = {
+      ...activeRecord, // ←これが超重要
+      ...form,
+    };
 
-  await updateDoc(ref, updatedData);
+    await updateDoc(ref, updatedData);
 
-  setRecords((prev) =>
-    prev.map((r) =>
-      r.id === activeRecord.id
-        ? { ...r, ...updatedData }  // ←ここが重要
-        : r
-    )
-  );
+    setRecords((prev) =>
+      prev.map((r) =>
+        r.id === activeRecord.id ? updatedData : r
+      )
+    );
+
+  } catch (error) {
+    console.error("更新エラー:", error);
+  }
 }
 // ✅ 追加する関数（handleSaveの外）
 const refresh = async () => {
