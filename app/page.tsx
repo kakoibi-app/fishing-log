@@ -156,36 +156,39 @@ const toDateTimeLocal = (date: any) => {
 
     if (mode === 'edit' && activeRecord) {
   try {
+    console.log("編集開始", activeRecord.id);
+
     const ref = doc(db, 'records', activeRecord.id);
 
-    const updatedData = {
-      lat: activeRecord.lat,
-      lng: activeRecord.lng,
-      userId: activeRecord.userId,
-      ...form,
+    const safeForm = {
+      fishType: String(form.fishType || ''),
+      size: String(form.size || ''),
+      weight: String(form.weight || ''),
+      depth: String(form.depth || ''),
+      rig: String(form.rig || ''),
+      comment: String(form.comment || ''),
+      date: typeof form.date === 'string'
+        ? form.date
+        : new Date().toISOString().slice(0, 16),
     };
 
-    
-await updateDoc(ref, {
-  ...safeForm,
-});
-console.log("FORM確認", form);
+    console.log("更新データ", safeForm);
 
+    await updateDoc(ref, safeForm);
+
+    console.log("✅ 更新成功");
 
     setRecords((prev) =>
       prev.map((r) =>
-        r.id === activeRecord.id
-          ? { ...r, ...updatedData }
-          : r
+        r.id === activeRecord.id ? { ...r, ...safeForm } : r
       )
     );
 
-    console.log("更新成功");
-
   } catch (error) {
-    console.error("更新失敗", error);
+    console.error("❌ 更新失敗", error);
   }
 }
+
 // ✅ 追加する関数（handleSaveの外）
 const refresh = async () => {
   const q = query(
