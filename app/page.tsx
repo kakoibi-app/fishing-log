@@ -246,9 +246,18 @@ const refresh = async () => {
             <button
               onClick={() => {
                 setMode('edit');
-                setForm(activeRecord);
-                setShowForm(true);
-                setActiveRecord(null);
+
+setForm({
+  fishType: activeRecord.fishType || '',
+  size: activeRecord.size || '',
+  weight: activeRecord.weight || '',
+  depth: activeRecord.depth || '',
+  rig: activeRecord.rig || '',
+  comment: activeRecord.comment || '',
+  date: activeRecord.date || '',
+});
+setShowForm(true);
+setActiveRecord(null);
               }}
               className="w-full bg-blue-600 text-white py-2 mt-2"
             >
