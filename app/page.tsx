@@ -539,43 +539,6 @@ if (!user) {
         </GoogleMap>
       </LoadScript>
 
-      {/* ===== Floating Add Button ===== */}
-
-      <button
-        onClick={() => {
-          setMode('new');
-
-          setPos(mapCenter);
-
-          setForm(emptyForm);
-        }}
-        className="
-        absolute
-        bottom-28
-        right-6
-        z-20
-        h-20
-        w-20
-        rounded-full
-        bg-blue-600
-        hover:bg-blue-700
-        active:scale-95
-        transition
-        text-white
-        shadow-2xl
-        flex
-        flex-col
-        items-center
-        justify-center
-        "
-      >
-        <span className="text-3xl leading-none">＋</span>
-
-        <span className="text-xs font-bold">
-          記録
-        </span>
-      </button>
-
       {/* ===== Selected Card ===== */}
 
       {selected && (
