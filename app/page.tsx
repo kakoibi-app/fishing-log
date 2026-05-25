@@ -457,78 +457,72 @@ if (!user) {
       {/* ===== Google Map ===== */}
 
       <LoadScript
-        googleMapsApiKey={
-          process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
-        }
-      >
-        <GoogleMap
-  mapContainerStyle={mapStyle}
-  center={mapCenter}
-  zoom={zoom}
-  onLoad={(map) => {
-    mapRef.current = map;
-  }}
-  onClick={handleMapClick}
-  onIdle={() => {
-    if (!mapRef.current) return;
-
-    const center = mapRef.current.getCenter();
-
-    if (!center) return;
-
-    const newCenter = {
-      lat: center.lat(),
-      lng: center.lng(),
-    };
-
-    const newZoom = mapRef.current.getZoom() || 9;
-
-    setMapCenter(newCenter);
-    setZoom(newZoom);
-
-    localStorage.setItem(
-      'map-center',
-      JSON.stringify(newCenter)
-    );
-
-    localStorage.setItem(
-      'map-zoom',
-      String(newZoom)
-    );
-  }}
-  options={{
-    disableDefaultUI: true,
-    zoomControl: true,
-    streetViewControl: false,
-    mapTypeControl: false,
-    fullscreenControl: false,
-    clickableIcons: false,
-    gestureHandling: 'greedy',
-    minZoom: 3,
-    styles: [
-      {
-        featureType: 'poi',
-        stylers: [{ visibility: 'off' }],
-      },
-    ],
-  }}
+  googleMapsApiKey={
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+  }
 >
-          {records.map((r) => (
-            <Marker
-              key={r.id}
-              position={{
-                lat: r.lat,
-                lng: r.lng,
-              }}
-              onClick={() => setSelected(r)}
-              icon={{
-                url:
-                  'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-              }}
-            />
-          ))}
-        </GoogleMap>
-      </LoadScript>
+  <div style={{ pointerEvents: mode ? 'none' : 'auto' }}>
+    <GoogleMap
+      mapContainerStyle={mapStyle}
+      center={mapCenter}
+      zoom={zoom}
+      onLoad={(map) => {
+        mapRef.current = map;
+      }}
+      onClick={handleMapClick}
+      onIdle={() => {
+        if (!mapRef.current) return;
+
+        const center = mapRef.current.getCenter();
+        if (!center) return;
+
+        const newCenter = {
+          lat: center.lat(),
+          lng: center.lng(),
+        };
+
+        const newZoom = mapRef.current.getZoom() || 9;
+
+        setMapCenter(newCenter);
+        setZoom(newZoom);
+
+        localStorage.setItem('map-center', JSON.stringify(newCenter));
+        localStorage.setItem('map-zoom', String(newZoom));
+      }}
+      options={{
+        disableDefaultUI: true,
+        zoomControl: true,
+        streetViewControl: false,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        clickableIcons: false,
+        gestureHandling: mode ? 'none' : 'greedy',
+        minZoom: 3,
+        styles: [
+          {
+            featureType: 'poi',
+            stylers: [{ visibility: 'off' }],
+          },
+        ],
+      }}
+    >
+      {records.map((r) => (
+        <Marker
+          key={r.id}
+          position={{
+            lat: r.lat,
+            lng: r.lng,
+          }}
+          onClick={() => setSelected(r)}
+          icon={{
+            url:
+              'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+          }}
+        />
+      ))}
+    </GoogleMap>
+  </div> {/* ✅ ← これを追加 */}
+</LoadScript>
 
       {/* ===== Selected Card ===== */}
 
