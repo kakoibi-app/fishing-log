@@ -263,7 +263,7 @@ if (!user) {
       justify-between
       "
       style={{
-        backgroundImage: "url('images/login-bg.png')",
+        backgroundImage: "url('/images/login-bg.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
@@ -276,7 +276,7 @@ if (!user) {
         {/* logo */}
         <div className="flex justify-center mb-6">
           <img
-            src="images/logo-white.png"
+            src="/images/logo-white.png"
             alt="logo"
             className="w-28 h-28 object-contain drop-shadow-2xl"
           />
