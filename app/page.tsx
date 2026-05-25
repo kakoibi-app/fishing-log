@@ -251,46 +251,97 @@ export default function Home() {
 
       {/* フォーム */}
       {(mode === 'new' || mode === 'edit') && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-40">
-          <div className="bg-white p-5 rounded-xl w-[90%] max-w-md space-y-2">
+  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-40">
+    <div className="bg-white w-[90%] max-w-md rounded-2xl p-5 shadow-xl space-y-3">
 
-            <input className="w-full border p-2 rounded" placeholder="魚種"
-              value={form.fishType}
-              onChange={(e) => setForm({ ...form, fishType: e.target.value })}
-            />
+      <h2 className="text-lg font-bold text-gray-800">
+        🎣 釣果記録
+      </h2>
 
-            <input className="w-full border p-2 rounded" placeholder="サイズ"
-              value={form.size}
-              onChange={(e) => setForm({ ...form, size: e.target.value })}
-            />
+      <input
+        className="w-full border p-2 rounded"
+        placeholder="魚種"
+        value={form.fishType}
+        onChange={(e) =>
+          setForm({ ...form, fishType: e.target.value })
+        }
+      />
 
-            <input className="w-full border p-2 rounded" placeholder="重量"
-              value={form.weight}
-              onChange={(e) => setForm({ ...form, weight: e.target.value })}
-            />
+      <input
+        type="datetime-local"
+        className="w-full border p-2 rounded"
+        value={form.date}
+        onChange={(e) =>
+          setForm({ ...form, date: e.target.value })
+        }
+      />
 
-            <textarea className="w-full border p-2 rounded" placeholder="コメント"
-              value={form.comment}
-              onChange={(e) => setForm({ ...form, comment: e.target.value })}
-            />
+      <div className="grid grid-cols-3 gap-2">
+        <input
+          className="border p-2 rounded"
+          placeholder="サイズ"
+          value={form.size}
+          onChange={(e) =>
+            setForm({ ...form, size: e.target.value })
+          }
+        />
 
-            <input type="datetime-local"
-              className="w-full border p-2 rounded"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
+        <input
+          className="border p-2 rounded"
+          placeholder="重量"
+          value={form.weight}
+          onChange={(e) =>
+            setForm({ ...form, weight: e.target.value })
+          }
+        />
 
-            <button className="w-full bg-blue-600 text-white py-2 rounded" onClick={save}>
-              保存
-            </button>
+        <input
+          className="border p-2 rounded"
+          placeholder="水深"
+          value={form.depth}
+          onChange={(e) =>
+            setForm({ ...form, depth: e.target.value })
+          }
+        />
+      </div>
 
-            <button className="w-full bg-gray-300 py-2 rounded" onClick={reset}>
-              キャンセル
-            </button>
+      <input
+        className="w-full border p-2 rounded"
+        placeholder="仕掛け"
+        value={form.rig}
+        onChange={(e) =>
+          setForm({ ...form, rig: e.target.value })
+        }
+      />
 
-          </div>
-        </div>
-      )}
+      <textarea
+        className="w-full border p-2 rounded"
+        placeholder="コメント"
+        value={form.comment}
+        onChange={(e) =>
+          setForm({ ...form, comment: e.target.value })
+        }
+      />
+
+      <div className="flex gap-2">
+        <button
+          onClick={reset}
+          className="flex-1 bg-gray-300 py-2 rounded"
+        >
+          キャンセル
+        </button>
+
+        <button
+          onClick={save}
+          className="flex-1 bg-blue-600 text-white py-2 rounded font-semibold"
+        >
+          保存
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
     </>
   );
 }
