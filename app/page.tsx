@@ -455,82 +455,80 @@ if (!user) {
       </div>
 
       {/* ===== Google Map ===== */}
-    {!mode && (
+
       <LoadScript
-  googleMapsApiKey={
-    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
-  }
+        googleMapsApiKey={
+          process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+        }
+      >
+        <GoogleMap
+  mapContainerStyle={mapStyle}
+  center={mapCenter}
+  zoom={zoom}
+  onLoad={(map) => {
+    mapRef.current = map;
+  }}
+  onClick={handleMapClick}
+  onIdle={() => {
+    if (!mapRef.current) return;
+
+    const center = mapRef.current.getCenter();
+
+    if (!center) return;
+
+    const newCenter = {
+      lat: center.lat(),
+      lng: center.lng(),
+    };
+
+    const newZoom = mapRef.current.getZoom() || 9;
+
+    setMapCenter(newCenter);
+    setZoom(newZoom);
+
+    localStorage.setItem(
+      'map-center',
+      JSON.stringify(newCenter)
+    );
+
+    localStorage.setItem(
+      'map-zoom',
+      String(newZoom)
+    );
+  }}
+  options={{
+    disableDefaultUI: true,
+    zoomControl: true,
+    streetViewControl: false,
+    mapTypeControl: false,
+    fullscreenControl: false,
+    clickableIcons: false,
+    gestureHandling: 'greedy',
+    minZoom: 3,
+    styles: [
+      {
+        featureType: 'poi',
+        stylers: [{ visibility: 'off' }],
+      },
+    ],
+  }}
 >
-  <div style={{ pointerEvents: mode ? 'none' : 'auto' }}>
-    <GoogleMap
-      mapContainerStyle={mapStyle}
-      center={mapCenter}
-      zoom={zoom}
-      onLoad={(map) => {
-        mapRef.current = map;
-      }}
-      onClick={handleMapClick}
-      onIdle={() => {
-        if (!mapRef.current) return;
-
-        const center = mapRef.current.getCenter();
-        if (!center) return;
-
-        const newCenter = {
-          lat: center.lat(),
-          lng: center.lng(),
-        };
-
-        const newZoom = mapRef.current.getZoom() || 9;
-
-        setMapCenter(newCenter);
-        setZoom(newZoom);
-
-        localStorage.setItem('map-center', JSON.stringify(newCenter));
-        localStorage.setItem('map-zoom', String(newZoom));
-      }}
-      options={{
-        disableDefaultUI: true,
-        zoomControl: true,
-        streetViewControl: false,
-        mapTypeControl: false,
-        fullscreenControl: false,
-        clickableIcons: false,
-        gestureHandling: mode ? 'none' : 'greedy',
-        
-draggable: !mode,
-      scrollwheel: !mode,
-      disableDoubleClickZoom: !!mode,
-      keyboardShortcuts: !mode,
-
-      minZoom: 3,
-
-        styles: [
-          {
-            featureType: 'poi',
-            stylers: [{ visibility: 'off' }],
-          },
-        ],
-      }}
-    >
-      {records.map((r) => (
-        <Marker
-          key={r.id}
-          position={{
-            lat: r.lat,
-            lng: r.lng,
-          }}
-          onClick={() => setSelected(r)}
-          icon={{
-            url:
-              'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-          }}
-        />
-      ))}
-    </GoogleMap>
-  </div> {/* ✅ ← これを追加 */}
-</LoadScript>
-)}
+          {records.map((r) => (
+            <Marker
+              key={r.id}
+              position={{
+                lat: r.lat,
+                lng: r.lng,
+              }}
+              onClick={() => setSelected(r)}
+              icon={{
+                url:
+                  'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+              }}
+            />
+          ))}
+        </GoogleMap>
+      </LoadScript>
 
       {/* ===== Selected Card ===== */}
 
@@ -671,18 +669,17 @@ draggable: !mode,
       {/* ===== Modal ===== */}
 
       {(mode === 'new' || mode === 'edit') && (
-        
         <div className="
         fixed
         inset-0
-        z-[9999]
+        z-40
         bg-black/40
         backdrop-blur-sm
         flex
         items-end
         sm:items-center
         justify-center
-        " style={{ pointerEvents: 'auto' }}>
+        ">
           <div className="
           bg-white
           w-full
