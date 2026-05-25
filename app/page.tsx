@@ -580,80 +580,138 @@ if (!user) {
       {/* ===== Selected Card ===== */}
 
       {selected && (
-  <div className="absolute bottom-24 left-4 right-4 z-30">
-    <div className="bg-white rounded-2xl shadow-lg px-5 py-4">
+        <div className="absolute bottom-6 left-4 right-4 z-30">
+          <div className="
+          rounded-[32px]
+          bg-white/95
+          backdrop-blur-xl
+          shadow-2xl
+          border
+          border-white/40
+          p-5
+          ">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="
+                inline-flex
+                bg-blue-100
+                text-blue-700
+                px-3
+                py-1
+                rounded-full
+                text-xs
+                font-bold
+                mb-3
+                ">
+                  {selected.fishType || '魚種未設定'}
+                </div>
 
-      {/* header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-            🐟
+                <h2 className="text-3xl font-black text-slate-800">
+                  {selected.size || '--'}
+                </h2>
+
+                <p className="text-slate-500 text-sm mt-1">
+                  {selected.date || '日時未設定'}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelected(null)}
+                className="
+                text-slate-400
+                text-lg
+                hover:text-slate-600
+                transition
+                "
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 mt-5">
+              <div className="bg-slate-100 rounded-2xl p-3">
+                <p className="text-xs text-slate-400">
+                  重量
+                </p>
+
+                <p className="font-bold text-slate-700 mt-1">
+                  {selected.weight || '--'}
+                </p>
+              </div>
+
+              <div className="bg-slate-100 rounded-2xl p-3">
+                <p className="text-xs text-slate-400">
+                  水深
+                </p>
+
+                <p className="font-bold text-slate-700 mt-1">
+                  {selected.depth || '--'}
+                </p>
+              </div>
+
+              <div className="bg-slate-100 rounded-2xl p-3">
+                <p className="text-xs text-slate-400">
+                  仕掛け
+                </p>
+
+                <p className="font-bold text-slate-700 mt-1 truncate">
+                  {selected.rig || '--'}
+                </p>
+              </div>
+            </div>
+
+            {selected.comment && (
+              <div className="
+              mt-4
+              bg-slate-50
+              rounded-2xl
+              p-4
+              text-sm
+              text-slate-700
+              leading-relaxed
+              ">
+                {selected.comment}
+              </div>
+            )}
+
+            <div className="flex gap-3 mt-5">
+              <button
+                onClick={startEdit}
+                className="
+                flex-1
+                bg-blue-600
+                hover:bg-blue-700
+                active:scale-[0.98]
+                transition
+                text-white
+                py-3
+                rounded-2xl
+                font-bold
+                "
+              >
+                編集
+              </button>
+
+              <button
+                onClick={remove}
+                className="
+                flex-1
+                bg-red-500
+                hover:bg-red-600
+                active:scale-[0.98]
+                transition
+                text-white
+                py-3
+                rounded-2xl
+                font-bold
+                "
+              >
+                削除
+              </button>
+            </div>
           </div>
-
-          <div>
-            <h2 className="font-bold text-slate-800 text-lg">
-              {selected.fishType || '魚種未設定'}
-            </h2>
-
-            <p className="text-xs text-slate-500">
-              {selected.date || '--'}
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={() => setSelected(null)}
-          className="text-slate-400 text-lg"
-        >
-          ✕
-        </button>
-      </div>
-
-      {/* main info */}
-      <div className="flex items-end gap-2 mt-4">
-        <span className="text-3xl font-black text-slate-800">
-          {selected.size || '--'}
-        </span>
-
-        {selected.weight && (
-          <span className="text-sm text-slate-500">
-            / {selected.weight}
-          </span>
-        )}
-      </div>
-
-      {/* sub info */}
-      <div className="flex gap-4 mt-3 text-sm text-slate-600">
-        <span>🌊 {selected.depth || '--'}</span>
-        <span className="truncate">🎣 {selected.rig || '--'}</span>
-      </div>
-
-      {/* comment */}
-      {selected.comment && (
-        <div className="mt-3 text-sm text-slate-600 bg-slate-50 rounded-xl p-3">
-          {selected.comment}
         </div>
       )}
-
-      {/* action */}
-      <div className="flex gap-3 mt-4">
-        <button
-          onClick={startEdit}
-          className="flex-1 bg-blue-600 text-white py-3 rounded-2xl font-bold"
-        >
-          編集
-        </button>
-
-        <button
-          onClick={remove}
-          className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-bold"
-        >
-          削除
-        </button>
-      </div>
-    </div>
-  </div>
-)}
 
       {/* ===== Modal ===== */}
 
