@@ -497,7 +497,14 @@ if (!user) {
         fullscreenControl: false,
         clickableIcons: false,
         gestureHandling: mode ? 'none' : 'greedy',
-        minZoom: 3,
+        
+draggable: !mode,
+      scrollwheel: !mode,
+      disableDoubleClickZoom: !!mode,
+      keyboardShortcuts: !mode,
+
+      minZoom: 3,
+
         styles: [
           {
             featureType: 'poi',
@@ -666,14 +673,14 @@ if (!user) {
         <div className="
         fixed
         inset-0
-        z-40
+        z-[9999]
         bg-black/40
         backdrop-blur-sm
         flex
         items-end
         sm:items-center
         justify-center
-        ">
+        " style={{ pointerEvents: 'auto' }}>
           <div className="
           bg-white
           w-full
