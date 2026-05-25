@@ -286,7 +286,7 @@ if (!user) {
         <h1
           className="
           text-white
-          text-6xl
+          text-5xl
           font-black
           tracking-wide
           drop-shadow-xl
