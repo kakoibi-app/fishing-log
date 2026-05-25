@@ -21,7 +21,7 @@ import {
 
 import { auth, db } from '../src/lib/firebase';
 
-type Mode = 'new' | 'edit' | null;
+type Mode = 'idle' | 'new' | 'edit';
 
 type RecordType = {
   id: string;
@@ -48,18 +48,21 @@ const emptyForm = {
 };
 
 export default function Home() {
+  /* ===== Auth ===== */
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  /* ===== Data ===== */
   const [records, setRecords] = useState<RecordType[]>([]);
-  const [mode, setMode] = useState<Mode>(null);
+
+  /* ===== UI State ===== */
+  const [mode, setMode] = useState<Mode>('idle');
   const [activeRecord, setActiveRecord] = useState<RecordType | null>(null);
   const [draftPos, setDraftPos] = useState<{ lat: number; lng: number } | null>(null);
-
-  const [form, setForm] = useState(emptyForm);
   const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState(emptyForm);
 
-  /* ---------- Auth ---------- */
+  /* ===== Auth Listener ===== */
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
@@ -79,11 +82,11 @@ export default function Home() {
     setUser(null);
   };
 
-  /* ---------- Fetch ---------- */
+  /* ===== Fetch Records ===== */
   useEffect(() => {
     if (!user) return;
 
-    const fetch = async () => {
+    const fetchRecords = async () => {
       const q = query(
         collection(db, 'records'),
         where('userId', '==', user.uid)
@@ -94,12 +97,13 @@ export default function Home() {
       setRecords(data);
     };
 
-    fetch();
+    fetchRecords();
   }, [user]);
 
-  /* ---------- Map ---------- */
+  /* ===== Map Click (NEW) ===== */
   const onMapClick = (e: google.maps.MapMouseEvent) => {
     if (!e.latLng) return;
+    if (mode !== 'idle') return; // 編集中・入力中は無視
 
     setMode('new');
     setDraftPos({
@@ -110,52 +114,63 @@ export default function Home() {
     setShowForm(true);
   };
 
-  /* ---------- Save ---------- */
+  /* ===== Save ===== */
   const save = async () => {
     if (!user) return;
 
     if (mode === 'new' && draftPos) {
-      const docRef = await addDoc(collection(db, 'records'), {
+      const newData = {
         ...form,
         ...draftPos,
         userId: user.uid,
-      });
-      setRecords((p) => [...p, { ...form, ...draftPos, userId: user.uid, id: docRef.id }]);
+      };
+
+      const ref = await addDoc(collection(db, 'records'), newData);
+      setRecords((prev) => [...prev, { ...newData, id: ref.id }]);
     }
 
     if (mode === 'edit' && activeRecord) {
       const ref = doc(db, 'records', activeRecord.id);
       await updateDoc(ref, form);
-      setRecords((p) =>
-        p.map((r) => (r.id === activeRecord.id ? { ...r, ...form } : r))
+      setRecords((prev) =>
+        prev.map((r) =>
+          r.id === activeRecord.id ? { ...r, ...form } : r
+        )
       );
     }
 
-    closeForm();
+    resetState();
   };
 
+  /* ===== Delete ===== */
   const remove = async () => {
     if (!activeRecord) return;
     await deleteDoc(doc(db, 'records', activeRecord.id));
-    setRecords((p) => p.filter((r) => r.id !== activeRecord.id));
-    setActiveRecord(null);
+    setRecords((prev) => prev.filter((r) => r.id !== activeRecord.id));
+    resetState();
   };
 
-  const closeForm = () => {
-    setShowForm(false);
-    setMode(null);
+  /* ===== Reset ===== */
+  const resetState = () => {
+    setMode('idle');
     setActiveRecord(null);
     setDraftPos(null);
     setForm(emptyForm);
+    setShowForm(false);
   };
 
-  /* ---------- UI ---------- */
-  if (loading) return <div className="h-screen flex items-center justify-center">Loading…</div>;
+  /* ===== UI ===== */
+  if (loading) {
+    return <div className="h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   if (!user) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <button onClick={login} className="bg-blue-600 text-white px-6 py-3 rounded">
+        <button
+          onClick={login}
+          className="bg-blue-600 text-white px-6 py-3 rounded"
+        >
           Googleでログイン
         </button>
       </div>
@@ -164,7 +179,7 @@ export default function Home() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 bg-white h-14 flex justify-between items-center px-4 shadow z-10">
+      <header className="fixed top-0 left-0 right-0 h-14 bg-white shadow flex items-center justify-between px-4 z-10">
         <span>🎣 Fishing Log</span>
         <button onClick={logout} className="bg-red-500 text-white px-3 py-1 rounded">
           ログアウト
@@ -182,12 +197,16 @@ export default function Home() {
             <Marker
               key={r.id}
               position={{ lat: r.lat, lng: r.lng }}
-              onClick={() => setActiveRecord(r)}
+              onClick={() => {
+                if (mode !== 'idle') return;
+                setActiveRecord(r);
+              }}
             />
           ))}
         </GoogleMap>
       </LoadScript>
 
+      {/* 詳細 */}
       {activeRecord && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
           <div className="bg-white p-4 rounded w-80">
@@ -203,7 +222,10 @@ export default function Home() {
             >
               編集
             </button>
-            <button onClick={remove} className="w-full bg-red-600 text-white py-2 mt-2">
+            <button
+              onClick={remove}
+              className="w-full bg-red-600 text-white py-2 mt-2"
+            >
               削除
             </button>
             <button onClick={() => setActiveRecord(null)} className="w-full mt-2">
@@ -213,6 +235,7 @@ export default function Home() {
         </div>
       )}
 
+      {/* フォーム */}
       {showForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-30">
           <div className="bg-white p-4 rounded w-80">
@@ -225,7 +248,7 @@ export default function Home() {
             <button onClick={save} className="w-full bg-blue-600 text-white py-2">
               保存
             </button>
-            <button onClick={closeForm} className="w-full mt-2">
+            <button onClick={resetState} className="w-full mt-2">
               キャンセル
             </button>
           </div>
