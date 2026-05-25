@@ -263,7 +263,7 @@ if (!user) {
       justify-between
       "
       style={{
-        backgroundImage: "url('/images/login-bg.png')",
+        backgroundImage: "url('images/login-bg.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
