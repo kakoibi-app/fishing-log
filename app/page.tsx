@@ -278,7 +278,7 @@ if (!user) {
           <img
             src="/images/logo-white.png"
             alt="logo"
-            className="w-35 h-35 object-contain drop-shadow-2xl"
+            className="w-55 h-55 object-contain drop-shadow-2xl"
           />
         </div>
 
@@ -309,9 +309,9 @@ if (!user) {
           from-blue-500
           to-blue-600
           text-white
-          text-2xl
+          text-0.5xl
           font-bold
-          shadow-2xl
+          shadow-1xl
           active:scale-[0.98]
           transition
           flex
@@ -322,14 +322,14 @@ if (!user) {
         >
           <div
             className="
-            h-12
-            w-12
+            h-5
+            w-5
             rounded-full
             bg-white
             flex
             items-center
             justify-center
-            text-2xl
+            text-0.5xl
             "
           >
             G
