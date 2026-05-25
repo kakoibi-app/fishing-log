@@ -287,7 +287,10 @@ setForm({
   depth: activeRecord.depth || '',
   rig: activeRecord.rig || '',
   comment: activeRecord.comment || '',
-  date: toDateTimeLocal(activeRecord.date),
+  date:
+    typeof activeRecord.date === "string"
+      ? activeRecord.date
+      : new Date().toISOString().slice(0, 16),
 });
 setShowForm(true);
 setActiveRecord(null);
@@ -319,11 +322,16 @@ setActiveRecord(null);
 
           <div className="bg-white p-4 rounded w-80">
             <input
-              className="w-full border p-2 mb-2"
-              placeholder="魚種"
-              value={form.fishType}
-              onChange={(e) => setForm({ ...form, fishType: e.target.value })}
-            />
+  type="datetime-local"
+  value={
+    typeof form.date === "string"
+      ? form.date
+      : new Date().toISOString().slice(0, 16)
+  }
+  onChange={(e) =>
+    setForm({ ...form, date: e.target.value })
+  }
+/>
             
 <button
   onClick={() => {
