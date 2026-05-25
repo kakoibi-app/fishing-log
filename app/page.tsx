@@ -320,7 +320,7 @@ if (!user) {
         >
   <div className="bg-white rounded-full p-2">
     <img
-      src="http://www.w3.org/2000/svg"
+      src="/images/google-logo.svg"
       alt="google"
       className="w-5 h-5"
     />
@@ -404,55 +404,52 @@ if (!user) {
   return (
     <div className="relative h-screen overflow-hidden bg-black">
       {/* ===== Header ===== */}
+<div className="absolute top-0 left-0 right-0 z-20 px-4 pt-6">
+  <div className="backdrop-blur-xl bg-white/80 rounded-3xl px-4 py-3 shadow-xl flex items-center justify-between">
 
-      <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-safe pt-4">
-        <div className="
-        rounded-3xl
-        bg-white/90
-        backdrop-blur-xl
-        shadow-2xl
-        border
-        border-white/40
-        px-5
-        py-4
-        flex
-        items-center
-        justify-between
-        ">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🎣</span>
+    {/* title */}
+    <div className="flex items-center gap-2">
+      <span className="text-xl">🎣</span>
+      <h1 className="font-black text-slate-800 text-lg">
+        釣りマップ
+      </h1>
+    </div>
 
-              <h1 className="font-black text-slate-800 text-xl">
-                Fishing Log
-              </h1>
-            </div>
+    {/* right icons */}
+    <div className="flex items-center gap-4">
+      <button className="text-xl">🔍</button>
 
-            <p className="text-xs text-slate-500 mt-1">
-              釣果 {records.length} 件
-            </p>
-          </div>
-
-          <button
-            onClick={logout}
-            className="
-            bg-red-500
-            hover:bg-red-600
-            active:scale-95
-            transition
-            text-white
-            px-4
-            py-2
-            rounded-2xl
-            text-sm
-            font-bold
-            shadow-lg
-            "
-          >
-            ログアウト
-          </button>
-        </div>
+      <div className="relative">
+        <button className="text-xl">🔔</button>
+        <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
       </div>
+
+      <button onClick={logout}>
+        <div className="w-9 h-9 rounded-full bg-slate-300 overflow-hidden" />
+      </button>
+    </div>
+  </div>
+
+  {/* ===== Filter Chips ===== */}
+  <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+    <button className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow">
+      📍 全ての釣果
+    </button>
+
+    <button className="bg-white px-4 py-2 rounded-full text-sm shadow">
+      魚種 ▼
+    </button>
+    <button className="bg-white px-4 py-2 rounded-full text-sm shadow">
+      時期 ▼
+    </button>
+    <button className="bg-white px-4 py-2 rounded-full text-sm shadow">
+      サイズ ▼
+    </button>
+    <button className="bg-white px-3 py-2 rounded-full text-sm shadow">
+      ⚙️
+    </button>
+  </div>
+</div>
 
       {/* ===== Google Map ===== */}
 
@@ -461,6 +458,24 @@ if (!user) {
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
         }
       >
+        {/* ===== Floating Buttons ===== */}
+<div className="absolute right-4 bottom-28 z-20 flex flex-col items-end gap-3">
+
+  {/* current location */}
+  <button className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-xl">
+    🎯
+  </button>
+
+  {/* add */}
+  <button
+    onClick={() => setMode('new')}
+    className="w-16 h-16 rounded-full bg-blue-600 text-white text-3xl shadow-2xl flex items-center justify-center active:scale-95"
+  >
+    ＋
+  </button>
+
+  <p className="text-white text-xs mr-1">ピンを追加</p>
+</div>
         <GoogleMap
   mapContainerStyle={mapStyle}
   center={mapCenter}
@@ -514,157 +529,131 @@ if (!user) {
   }}
 >
           {records.map((r) => (
+            
+          
             <Marker
               key={r.id}
-              position={{
-                lat: r.lat,
-                lng: r.lng,
-              }}
+              position={{ lat: r.lat, lng: r.lng }}
               onClick={() => setSelected(r)}
               icon={{
-                url:
-                  'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                url: "/images/fish-marker.png",
+                scaledSize: new google.maps.Size(36, 36),
+                anchor: new google.maps.Point(18, 18), // 中央に合わせる
               }}
             />
+
+
           ))}
         </GoogleMap>
       </LoadScript>
+      {/* ===== Bottom Nav ===== */}
+<div className="absolute bottom-0 left-0 right-0 z-20 bg-white/90 backdrop-blur-xl border-t py-2 flex justify-around text-sm">
+
+  <div className="flex flex-col items-center text-blue-600">
+    <span>🗺️</span>
+    <span>マップ</span>
+  </div>
+
+  <div className="flex flex-col items-center text-slate-400">
+    <span>📄</span>
+    <span>記録</span>
+  </div>
+
+  <div className="flex flex-col items-center">
+    <div className="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl -mt-6 shadow-xl">
+      ＋
+    </div>
+  </div>
+
+  <div className="flex flex-col items-center text-slate-400">
+    <span>📊</span>
+    <span>統計</span>
+  </div>
+
+  <div className="flex flex-col items-center text-slate-400">
+    <span>👤</span>
+    <span>マイページ</span>
+  </div>
+</div>
+``
 
       {/* ===== Selected Card ===== */}
 
       {selected && (
-        <div className="absolute bottom-6 left-4 right-4 z-30">
-          <div className="
-          rounded-[32px]
-          bg-white/95
-          backdrop-blur-xl
-          shadow-2xl
-          border
-          border-white/40
-          p-5
-          ">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="
-                inline-flex
-                bg-blue-100
-                text-blue-700
-                px-3
-                py-1
-                rounded-full
-                text-xs
-                font-bold
-                mb-3
-                ">
-                  {selected.fishType || '魚種未設定'}
-                </div>
+  <div className="absolute bottom-24 left-4 right-4 z-30">
+    <div className="bg-white/95 backdrop-blur-xl rounded-[28px] shadow-2xl px-5 py-4">
 
-                <h2 className="text-3xl font-black text-slate-800">
-                  {selected.size || '--'}
-                </h2>
+      {/* header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+            🐟
+          </div>
 
-                <p className="text-slate-500 text-sm mt-1">
-                  {selected.date || '日時未設定'}
-                </p>
-              </div>
+          <div>
+            <h2 className="font-bold text-slate-800 text-lg">
+              {selected.fishType || '魚種未設定'}
+            </h2>
 
-              <button
-                onClick={() => setSelected(null)}
-                className="
-                text-slate-400
-                text-lg
-                hover:text-slate-600
-                transition
-                "
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 mt-5">
-              <div className="bg-slate-100 rounded-2xl p-3">
-                <p className="text-xs text-slate-400">
-                  重量
-                </p>
-
-                <p className="font-bold text-slate-700 mt-1">
-                  {selected.weight || '--'}
-                </p>
-              </div>
-
-              <div className="bg-slate-100 rounded-2xl p-3">
-                <p className="text-xs text-slate-400">
-                  水深
-                </p>
-
-                <p className="font-bold text-slate-700 mt-1">
-                  {selected.depth || '--'}
-                </p>
-              </div>
-
-              <div className="bg-slate-100 rounded-2xl p-3">
-                <p className="text-xs text-slate-400">
-                  仕掛け
-                </p>
-
-                <p className="font-bold text-slate-700 mt-1 truncate">
-                  {selected.rig || '--'}
-                </p>
-              </div>
-            </div>
-
-            {selected.comment && (
-              <div className="
-              mt-4
-              bg-slate-50
-              rounded-2xl
-              p-4
-              text-sm
-              text-slate-700
-              leading-relaxed
-              ">
-                {selected.comment}
-              </div>
-            )}
-
-            <div className="flex gap-3 mt-5">
-              <button
-                onClick={startEdit}
-                className="
-                flex-1
-                bg-blue-600
-                hover:bg-blue-700
-                active:scale-[0.98]
-                transition
-                text-white
-                py-3
-                rounded-2xl
-                font-bold
-                "
-              >
-                編集
-              </button>
-
-              <button
-                onClick={remove}
-                className="
-                flex-1
-                bg-red-500
-                hover:bg-red-600
-                active:scale-[0.98]
-                transition
-                text-white
-                py-3
-                rounded-2xl
-                font-bold
-                "
-              >
-                削除
-              </button>
-            </div>
+            <p className="text-xs text-slate-500">
+              {selected.date || '--'}
+            </p>
           </div>
         </div>
+
+        <button
+          onClick={() => setSelected(null)}
+          className="text-slate-400 text-lg"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* main info */}
+      <div className="flex items-end gap-2 mt-4">
+        <span className="text-3xl font-black text-slate-800">
+          {selected.size || '--'}
+        </span>
+
+        {selected.weight && (
+          <span className="text-sm text-slate-500">
+            / {selected.weight}
+          </span>
+        )}
+      </div>
+
+      {/* sub info */}
+      <div className="flex gap-4 mt-3 text-sm text-slate-600">
+        <span>🌊 {selected.depth || '--'}</span>
+        <span className="truncate">🎣 {selected.rig || '--'}</span>
+      </div>
+
+      {/* comment */}
+      {selected.comment && (
+        <div className="mt-3 text-sm text-slate-600 bg-slate-50 rounded-xl p-3">
+          {selected.comment}
+        </div>
       )}
+
+      {/* action */}
+      <div className="flex gap-3 mt-4">
+        <button
+          onClick={startEdit}
+          className="flex-1 bg-blue-600 text-white py-3 rounded-2xl font-bold"
+        >
+          編集
+        </button>
+
+        <button
+          onClick={remove}
+          className="flex-1 bg-red-500 text-white py-3 rounded-2xl font-bold"
+        >
+          削除
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* ===== Modal ===== */}
 
