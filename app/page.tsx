@@ -338,33 +338,6 @@ if (!user) {
           Googleでログイン
         </button>
 
-        {/* mail login */}
-        <button
-          className="
-          mt-6
-          w-full
-          h-20
-          rounded-[28px]
-          bg-white
-          border
-          border-slate-200
-          text-slate-800
-          text-2xl
-          font-bold
-          shadow-lg
-          active:scale-[0.98]
-          transition
-          flex
-          items-center
-          justify-center
-          gap-4
-          "
-        >
-          <span className="text-3xl">✉️</span>
-
-          メールアドレスでログイン
-        </button>
-
         {/* features */}
         <div className="grid grid-cols-3 gap-4 mt-10">
           <div className="text-center">
