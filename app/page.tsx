@@ -113,7 +113,20 @@ export default function Home() {
     setForm(emptyForm);
     setShowForm(true);
   };
+const toDateTimeLocal = (date: any) => {
+  try {
+    if (!date) return new Date().toISOString().slice(0, 16);
 
+    // Firestore Timestamp対応
+    if (date.seconds) {
+      return new Date(date.seconds * 1000).toISOString().slice(0, 16);
+    }
+
+    return new Date(date).toISOString().slice(0, 16);
+  } catch {
+    return new Date().toISOString().slice(0, 16);
+  }
+};
   /* ===== Save ===== */
   const save = async () => {
     if (!user) return;
@@ -254,9 +267,7 @@ setForm({
   depth: activeRecord.depth || '',
   rig: activeRecord.rig || '',
   comment: activeRecord.comment || '',
-  date: activeRecord.date
-    ? new Date(activeRecord.date).toISOString().slice(0, 16)
-    : new Date().toISOString().slice(0, 16),
+  date: toDateTimeLocal(activeRecord.date),
 });
 setShowForm(true);
 setActiveRecord(null);
