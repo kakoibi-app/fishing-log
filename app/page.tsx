@@ -133,7 +133,7 @@ export default function Home() {
   const ref = doc(db, 'records', activeRecord.id);
 
   const updatedData = {
-    ...activeRecord, // ←これ重要
+    ...activeRecord,
     ...form,
   };
 
@@ -141,10 +141,26 @@ export default function Home() {
 
   setRecords((prev) =>
     prev.map((r) =>
-      r.id === activeRecord.id ? updatedData : r
+      r.id === activeRecord.id
+        ? { ...r, ...updatedData }  // ←ここが重要
+        : r
     )
   );
 }
+// ✅ 追加する関数（handleSaveの外）
+const refresh = async () => {
+  const q = query(
+    collection(db, 'records'),
+    where('userId', '==', user.uid)
+  );
+
+  const snap = await getDocs(q);
+
+  const data:any[] = [];
+  snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
+
+  setRecords(data);
+};
 
     resetState();
   };
