@@ -197,11 +197,13 @@ export default function Home() {
           onClick={handleMapClick}
         >
           {records.map((r) => (
-            <Marker
-              key={r.id}
-              position={{ lat: r.lat, lng: r.lng }}
-              onClick={() => setSelected(r)}
-            />
+            
+<Marker
+  key={r.id + r.fishType + r.date} // ←これ追加
+  position={{ lat: r.lat, lng: r.lng }}
+  onClick={() => setSelected(r)}
+/>
+
           ))}
         </GoogleMap>
       </LoadScript>
