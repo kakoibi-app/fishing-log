@@ -130,14 +130,21 @@ export default function Home() {
     }
 
     if (mode === 'edit' && activeRecord) {
-      const ref = doc(db, 'records', activeRecord.id);
-      await updateDoc(ref, form);
-      setRecords((prev) =>
-        prev.map((r) =>
-          r.id === activeRecord.id ? { ...r, ...form } : r
-        )
-      );
-    }
+  const ref = doc(db, 'records', activeRecord.id);
+
+  const updatedData = {
+    ...activeRecord, // ←これ重要
+    ...form,
+  };
+
+  await updateDoc(ref, updatedData);
+
+  setRecords((prev) =>
+    prev.map((r) =>
+      r.id === activeRecord.id ? updatedData : r
+    )
+  );
+}
 
     resetState();
   };
