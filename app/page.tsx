@@ -291,10 +291,8 @@ if (!user) {
         z-10
         bg-white/92
         backdrop-blur-2xl
-        rounded-t-[48px]
-        px-7
-        pt-8
-        pb-10
+        rounded-t-[36px]
+        pt-7 pb-10 px-6
         shadow-2xl
         "
       >
@@ -302,46 +300,39 @@ if (!user) {
         <button
           onClick={login}
           className="
+          h-16
           w-full
-          h-20
-          rounded-[28px]
+          rounded-2xl
           bg-gradient-to-r
           from-blue-500
           to-blue-600
-          text-white
-          text-0.5xl
-          font-bold
-          shadow-1xl
-          active:scale-[0.98]
-          transition
+          shadow-xl
           flex
           items-center
           justify-center
-          gap-4
+          gap-3
+          text-white
+          text-xl
+          font-bold
+          active:scale-[0.98]
+          transition
           "
         >
-          <div
-            className="
-            h-5
-            w-5
-            rounded-full
-            bg-white
-            flex
-            items-center
-            justify-center
-            text-0.5xl
-            "
-          >
-            G
-          </div>
+  <div className="bg-white rounded-full p-2">
+    <img
+      src="http://www.w3.org/2000/svg"
+      alt="google"
+      className="w-5 h-5"
+    />
+  </div>
 
-          Googleでログイン
-        </button>
+  Googleでログイン
+</button>
 
         {/* features */}
-        <div className="grid grid-cols-3 gap-4 mt-10">
+        <div className="grid grid-cols-3 gap-2 mt-6">
           <div className="text-center">
-            <div className="text-2xl mb-3">📍</div>
+            <div className="text-lg mb-3">📍</div>
 
             <h3 className="font-bold text-slate-800 text-lg">
               釣り場を探す
@@ -355,7 +346,7 @@ if (!user) {
           </div>
 
           <div className="text-center">
-            <div className="text-2xl mb-3">🐟</div>
+            <div className="text-lg mb-3">🐟</div>
 
             <h3 className="font-bold text-slate-800 text-lg">
               釣果を記録
@@ -369,7 +360,7 @@ if (!user) {
           </div>
 
           <div className="text-center">
-            <div className="text-2xl mb-3">📊</div>
+            <div className="text-lg mb-3">📊</div>
 
             <h3 className="font-bold text-slate-800 text-lg">
               情報共有
@@ -430,7 +421,7 @@ if (!user) {
         ">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🎣</span>
+              <span className="text-lg">🎣</span>
 
               <h1 className="font-black text-slate-800 text-xl">
                 Fishing Log
@@ -581,7 +572,7 @@ if (!user) {
                 onClick={() => setSelected(null)}
                 className="
                 text-slate-400
-                text-2xl
+                text-lg
                 hover:text-slate-600
                 transition
                 "
