@@ -122,20 +122,25 @@ export default function Home() {
       }
 
       if (mode === 'edit' && selected) {
-        const ref = doc(db, 'records', selected.id);
+        console.log("mode:", mode);
+console.log("selected:", selected);
 
-        const updateData = {
-          fishType: form.fishType,
-          date: form.date,
-        };
+if (mode === 'edit' && selected) {
+  console.log("💥 edit処理入った");
 
-        await updateDoc(ref, updateData);
+  const ref = doc(db, 'records', selected.id);
 
-        setRecords((prev) =>
-          prev.map((r) =>
-            r.id === selected.id ? { ...r, ...updateData } : r
-          )
-        );
+  const updateData = {
+    fishType: form.fishType,
+    date: form.date,
+  };
+
+  console.log("updateData:", updateData);
+
+  await updateDoc(ref, updateData);
+
+  console.log("✅ DB更新成功");
+}
       }
     } catch (e) {
       console.error("保存エラー", e);
