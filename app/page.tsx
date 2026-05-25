@@ -1,7 +1,7 @@
 'use client';
 
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   collection,
   addDoc,
@@ -55,12 +55,46 @@ export default function Home() {
   const [records, setRecords] = useState<RecordType[]>([]);
 
   const [mode, setMode] = useState<'new' | 'edit' | null>(null);
+
   const [selected, setSelected] = useState<RecordType | null>(null);
-  const [pos, setPos] = useState<{ lat: number; lng: number } | null>(null);
+
+  const [pos, setPos] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const [form, setForm] = useState(emptyForm);
 
+  const [mapCenter, setMapCenter] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('map-center');
+
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    }
+
+    return {
+      lat: 35.6,
+      lng: 139.6,
+    };
+  });
+
+  const [zoom, setZoom] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('map-zoom');
+
+      if (saved) {
+        return Number(saved);
+      }
+    }
+
+    return 9;
+  });
+  const mapRef = useRef<google.maps.Map | null>(null);
+
   /* ===== Auth ===== */
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
@@ -72,16 +106,20 @@ export default function Home() {
 
   const login = async () => {
     const provider = new GoogleAuthProvider();
+
     const res = await signInWithPopup(auth, provider);
+
     setUser(res.user);
   };
 
   const logout = async () => {
     await signOut(auth);
+
     setUser(null);
   };
 
   /* ===== データ取得 ===== */
+
   const fetchRecords = async () => {
     if (!user) return;
 
@@ -91,9 +129,15 @@ export default function Home() {
     );
 
     const snap = await getDocs(q);
+
     const data: any[] = [];
 
-    snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
+    snap.forEach((d) => {
+      data.push({
+        id: d.id,
+        ...d.data(),
+      });
+    });
 
     setRecords(data);
   };
@@ -103,8 +147,10 @@ export default function Home() {
   }, [user]);
 
   /* ===== Map Click ===== */
+
   const handleMapClick = (e: any) => {
     if (!e.latLng) return;
+
     if (mode) return;
 
     setMode('new');
@@ -118,19 +164,18 @@ export default function Home() {
   };
 
   /* ===== 保存 ===== */
+
   const save = async () => {
     if (!user) return;
 
     try {
       if (mode === 'new' && pos) {
-        const newData = {
+        await addDoc(collection(db, 'records'), {
           ...form,
           lat: pos.lat,
           lng: pos.lng,
           userId: user.uid,
-        };
-
-        await addDoc(collection(db, 'records'), newData);
+        });
       }
 
       if (mode === 'edit' && selected) {
@@ -149,23 +194,26 @@ export default function Home() {
 
       await fetchRecords();
     } catch (e) {
-      console.error('保存エラー', e);
+      console.error(e);
     }
 
     reset();
   };
 
   /* ===== 削除 ===== */
+
   const remove = async () => {
     if (!selected) return;
 
     await deleteDoc(doc(db, 'records', selected.id));
 
     await fetchRecords();
+
     setSelected(null);
   };
 
   /* ===== 編集開始 ===== */
+
   const startEdit = () => {
     if (!selected) return;
 
@@ -190,36 +238,54 @@ export default function Home() {
   };
 
   /* ===== Loading ===== */
+
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-slate-100 text-slate-700">
-        Loading...
+      <div className="h-screen flex items-center justify-center bg-slate-100">
+        <div className="text-slate-700 text-lg font-semibold">
+          Loading...
+        </div>
       </div>
     );
   }
 
   /* ===== Login ===== */
+
   if (!user) {
     return (
-      <div className="relative h-screen overflow-hidden bg-gradient-to-br from-sky-400 to-blue-700 flex items-center justify-center px-6">
+      <div className="relative h-screen overflow-hidden bg-gradient-to-br from-sky-400 via-blue-500 to-blue-700 flex items-center justify-center px-6">
         <div className="absolute inset-0 bg-black/10" />
 
-        <div className="relative z-10 w-full max-w-sm rounded-[32px] bg-white/90 backdrop-blur-xl p-8 shadow-2xl">
-          <div className="text-center space-y-3 mb-8">
-            <div className="text-5xl">🎣</div>
+        <div className="relative z-10 w-full max-w-sm rounded-[36px] bg-white/90 backdrop-blur-xl p-8 shadow-2xl">
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-4">🎣</div>
 
-            <h1 className="text-3xl font-bold text-slate-800">
-              釣りマップ
+            <h1 className="text-4xl font-black text-slate-800">
+              Fishing Log
             </h1>
 
-            <p className="text-slate-500 text-sm">
-              釣果を記録して、自分だけのポイントマップを作ろう。
+            <p className="text-slate-500 mt-3 leading-relaxed">
+              釣果を記録して、
+              <br />
+              自分だけの釣りマップを作ろう。
             </p>
           </div>
 
           <button
             onClick={login}
-            className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 transition text-white py-4 font-semibold text-lg shadow-lg"
+            className="
+            w-full
+            rounded-2xl
+            bg-blue-600
+            hover:bg-blue-700
+            active:scale-[0.98]
+            transition
+            text-white
+            py-4
+            font-bold
+            text-lg
+            shadow-xl
+            "
           >
             Googleでログイン
           </button>
@@ -229,56 +295,124 @@ export default function Home() {
   }
 
   return (
-    <div className="relative h-screen overflow-hidden">
+    <div className="relative h-screen overflow-hidden bg-black">
       {/* ===== Header ===== */}
-      <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-4">
-        <div className="rounded-3xl bg-white/90 backdrop-blur-xl shadow-xl px-5 py-4 flex items-center justify-between border border-white/40">
+
+      <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-safe pt-4">
+        <div className="
+        rounded-3xl
+        bg-white/90
+        backdrop-blur-xl
+        shadow-2xl
+        border
+        border-white/40
+        px-5
+        py-4
+        flex
+        items-center
+        justify-between
+        ">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">🎣</span>
-              <h1 className="font-bold text-slate-800 text-xl">
-                釣りマップ
+
+              <h1 className="font-black text-slate-800 text-xl">
+                Fishing Log
               </h1>
             </div>
 
             <p className="text-xs text-slate-500 mt-1">
-              釣果記録 {records.length} 件
+              釣果 {records.length} 件
             </p>
           </div>
 
           <button
             onClick={logout}
-            className="bg-red-500 hover:bg-red-600 transition text-white px-4 py-2 rounded-2xl text-sm font-semibold"
+            className="
+            bg-red-500
+            hover:bg-red-600
+            active:scale-95
+            transition
+            text-white
+            px-4
+            py-2
+            rounded-2xl
+            text-sm
+            font-bold
+            shadow-lg
+            "
           >
             ログアウト
           </button>
         </div>
       </div>
 
-      {/* ===== Map ===== */}
+      {/* ===== Google Map ===== */}
+
       <LoadScript
-        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
+        googleMapsApiKey={
+          process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
+        }
       >
         <GoogleMap
-          mapContainerStyle={mapStyle}
-          center={{ lat: 35.6, lng: 139.6 }}
-          zoom={9}
-          onClick={handleMapClick}
-          options={{
-            disableDefaultUI: true,
-            zoomControl: true,
-            styles: [
-              {
-                featureType: 'poi',
-                stylers: [{ visibility: 'off' }],
-              },
-            ],
-          }}
-        >
+  mapContainerStyle={mapStyle}
+  center={mapCenter}
+  zoom={zoom}
+  onLoad={(map) => {
+    mapRef.current = map;
+  }}
+  onClick={handleMapClick}
+  onIdle={() => {
+    if (!mapRef.current) return;
+
+    const center = mapRef.current.getCenter();
+
+    if (!center) return;
+
+    const newCenter = {
+      lat: center.lat(),
+      lng: center.lng(),
+    };
+
+    const newZoom = mapRef.current.getZoom() || 9;
+
+    setMapCenter(newCenter);
+    setZoom(newZoom);
+
+    localStorage.setItem(
+      'map-center',
+      JSON.stringify(newCenter)
+    );
+
+    localStorage.setItem(
+      'map-zoom',
+      String(newZoom)
+    );
+  }}
+  options={{
+    disableDefaultUI: true,
+    zoomControl: true,
+    streetViewControl: false,
+    mapTypeControl: false,
+    fullscreenControl: false,
+    clickableIcons: false,
+    gestureHandling: 'greedy',
+    minZoom: 3,
+    styles: [
+      {
+        featureType: 'poi',
+        stylers: [{ visibility: 'off' }],
+      },
+    ],
+  }}
+>
           {records.map((r) => (
             <Marker
-              key={r.id + r.date}
-              position={{ lat: r.lat, lng: r.lng }}
+              key={r.id}
+              position={{
+                lat: r.lat,
+                lng: r.lng,
+              }}
               onClick={() => setSelected(r)}
               icon={{
                 url:
@@ -290,41 +424,88 @@ export default function Home() {
       </LoadScript>
 
       {/* ===== Floating Add Button ===== */}
+
       <button
         onClick={() => {
           setMode('new');
-          setPos({ lat: 35.6, lng: 139.6 });
+
+          setPos(mapCenter);
+
+          setForm(emptyForm);
         }}
-        className="absolute bottom-28 right-6 z-20 h-20 w-20 rounded-full bg-blue-600 text-white shadow-2xl flex flex-col items-center justify-center hover:scale-105 transition"
+        className="
+        absolute
+        bottom-28
+        right-6
+        z-20
+        h-20
+        w-20
+        rounded-full
+        bg-blue-600
+        hover:bg-blue-700
+        active:scale-95
+        transition
+        text-white
+        shadow-2xl
+        flex
+        flex-col
+        items-center
+        justify-center
+        "
       >
         <span className="text-3xl leading-none">＋</span>
-        <span className="text-xs font-semibold">記録</span>
+
+        <span className="text-xs font-bold">
+          記録
+        </span>
       </button>
 
-      {/* ===== Bottom Card ===== */}
+      {/* ===== Selected Card ===== */}
+
       {selected && (
         <div className="absolute bottom-6 left-4 right-4 z-30">
-          <div className="rounded-[32px] bg-white/95 backdrop-blur-xl shadow-2xl p-5 border border-white/40">
-            <div className="flex items-start justify-between gap-3">
+          <div className="
+          rounded-[32px]
+          bg-white/95
+          backdrop-blur-xl
+          shadow-2xl
+          border
+          border-white/40
+          p-5
+          ">
+            <div className="flex items-start justify-between">
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
-                    {selected.fishType || '魚種未設定'}
-                  </div>
+                <div className="
+                inline-flex
+                bg-blue-100
+                text-blue-700
+                px-3
+                py-1
+                rounded-full
+                text-xs
+                font-bold
+                mb-3
+                ">
+                  {selected.fishType || '魚種未設定'}
                 </div>
 
-                <h2 className="text-2xl font-bold text-slate-800">
+                <h2 className="text-3xl font-black text-slate-800">
                   {selected.size || '--'}
                 </h2>
 
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-slate-500 text-sm mt-1">
                   {selected.date || '日時未設定'}
                 </p>
               </div>
 
               <button
                 onClick={() => setSelected(null)}
-                className="text-slate-400 text-xl"
+                className="
+                text-slate-400
+                text-2xl
+                hover:text-slate-600
+                transition
+                "
               >
                 ✕
               </button>
@@ -332,44 +513,81 @@ export default function Home() {
 
             <div className="grid grid-cols-3 gap-3 mt-5">
               <div className="bg-slate-100 rounded-2xl p-3">
-                <p className="text-xs text-slate-400">重量</p>
-                <p className="font-semibold text-slate-700">
+                <p className="text-xs text-slate-400">
+                  重量
+                </p>
+
+                <p className="font-bold text-slate-700 mt-1">
                   {selected.weight || '--'}
                 </p>
               </div>
 
               <div className="bg-slate-100 rounded-2xl p-3">
-                <p className="text-xs text-slate-400">水深</p>
-                <p className="font-semibold text-slate-700">
+                <p className="text-xs text-slate-400">
+                  水深
+                </p>
+
+                <p className="font-bold text-slate-700 mt-1">
                   {selected.depth || '--'}
                 </p>
               </div>
 
               <div className="bg-slate-100 rounded-2xl p-3">
-                <p className="text-xs text-slate-400">仕掛け</p>
-                <p className="font-semibold text-slate-700 truncate">
+                <p className="text-xs text-slate-400">
+                  仕掛け
+                </p>
+
+                <p className="font-bold text-slate-700 mt-1 truncate">
                   {selected.rig || '--'}
                 </p>
               </div>
             </div>
 
             {selected.comment && (
-              <div className="mt-4 bg-slate-50 rounded-2xl p-4 text-sm text-slate-600">
+              <div className="
+              mt-4
+              bg-slate-50
+              rounded-2xl
+              p-4
+              text-sm
+              text-slate-700
+              leading-relaxed
+              ">
                 {selected.comment}
               </div>
             )}
 
             <div className="flex gap-3 mt-5">
               <button
-                className="flex-1 rounded-2xl bg-blue-600 hover:bg-blue-700 transition text-white py-3 font-semibold"
                 onClick={startEdit}
+                className="
+                flex-1
+                bg-blue-600
+                hover:bg-blue-700
+                active:scale-[0.98]
+                transition
+                text-white
+                py-3
+                rounded-2xl
+                font-bold
+                "
               >
                 編集
               </button>
 
               <button
-                className="flex-1 rounded-2xl bg-red-500 hover:bg-red-600 transition text-white py-3 font-semibold"
                 onClick={remove}
+                className="
+                flex-1
+                bg-red-500
+                hover:bg-red-600
+                active:scale-[0.98]
+                transition
+                text-white
+                py-3
+                rounded-2xl
+                font-bold
+                "
               >
                 削除
               </button>
@@ -378,26 +596,55 @@ export default function Home() {
         </div>
       )}
 
-      {/* ===== Form Modal ===== */}
-      {(mode === 'new' || mode === 'edit') && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center z-40">
-          <div className="bg-white w-full sm:w-[92%] sm:max-w-lg rounded-t-[32px] sm:rounded-[32px] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="w-16 h-1.5 bg-slate-200 rounded-full mx-auto mb-5 sm:hidden" />
+      {/* ===== Modal ===== */}
 
-            <div className="flex items-center justify-between mb-5">
+      {(mode === 'new' || mode === 'edit') && (
+        <div className="
+        fixed
+        inset-0
+        z-40
+        bg-black/40
+        backdrop-blur-sm
+        flex
+        items-end
+        sm:items-center
+        justify-center
+        ">
+          <div className="
+          bg-white
+          w-full
+          sm:max-w-lg
+          rounded-t-[36px]
+          sm:rounded-[36px]
+          p-6
+          shadow-2xl
+          max-h-[90vh]
+          overflow-y-auto
+          ">
+            <div className="
+            w-16
+            h-1.5
+            bg-slate-200
+            rounded-full
+            mx-auto
+            mb-5
+            sm:hidden
+            " />
+
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">
+                <h2 className="text-3xl font-black text-slate-800">
                   🎣 釣果記録
                 </h2>
 
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-slate-500 mt-2">
                   釣れた魚の情報を記録します
                 </p>
               </div>
 
               <button
                 onClick={reset}
-                className="text-slate-400 text-2xl"
+                className="text-slate-400 text-3xl"
               >
                 ✕
               </button>
@@ -405,67 +652,183 @@ export default function Home() {
 
             <div className="space-y-4">
               <input
-                className="w-full bg-slate-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                w-full
+                bg-white
+                border
+                border-slate-300
+                text-slate-800
+                placeholder:text-slate-400
+                rounded-2xl
+                px-4
+                py-4
+                outline-none
+                focus:ring-4
+                focus:ring-blue-200
+                focus:border-blue-500
+                "
                 placeholder="魚種"
                 value={form.fishType}
                 onChange={(e) =>
-                  setForm({ ...form, fishType: e.target.value })
+                  setForm({
+                    ...form,
+                    fishType: e.target.value,
+                  })
                 }
               />
 
               <input
                 type="datetime-local"
-                className="w-full bg-slate-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                w-full
+                bg-white
+                border
+                border-slate-300
+                text-slate-800
+                rounded-2xl
+                px-4
+                py-4
+                outline-none
+                focus:ring-4
+                focus:ring-blue-200
+                focus:border-blue-500
+                "
                 value={form.date}
                 onChange={(e) =>
-                  setForm({ ...form, date: e.target.value })
+                  setForm({
+                    ...form,
+                    date: e.target.value,
+                  })
                 }
               />
 
               <div className="grid grid-cols-3 gap-3">
                 <input
-                  className="bg-slate-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="
+                  bg-white
+                  border
+                  border-slate-300
+                  text-slate-800
+                  placeholder:text-slate-400
+                  rounded-2xl
+                  px-4
+                  py-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-blue-200
+                  focus:border-blue-500
+                  "
                   placeholder="サイズ"
                   value={form.size}
                   onChange={(e) =>
-                    setForm({ ...form, size: e.target.value })
+                    setForm({
+                      ...form,
+                      size: e.target.value,
+                    })
                   }
                 />
 
                 <input
-                  className="bg-slate-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="
+                  bg-white
+                  border
+                  border-slate-300
+                  text-slate-800
+                  placeholder:text-slate-400
+                  rounded-2xl
+                  px-4
+                  py-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-blue-200
+                  focus:border-blue-500
+                  "
                   placeholder="重量"
                   value={form.weight}
                   onChange={(e) =>
-                    setForm({ ...form, weight: e.target.value })
+                    setForm({
+                      ...form,
+                      weight: e.target.value,
+                    })
                   }
                 />
 
                 <input
-                  className="bg-slate-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="
+                  bg-white
+                  border
+                  border-slate-300
+                  text-slate-800
+                  placeholder:text-slate-400
+                  rounded-2xl
+                  px-4
+                  py-4
+                  outline-none
+                  focus:ring-4
+                  focus:ring-blue-200
+                  focus:border-blue-500
+                  "
                   placeholder="水深"
                   value={form.depth}
                   onChange={(e) =>
-                    setForm({ ...form, depth: e.target.value })
+                    setForm({
+                      ...form,
+                      depth: e.target.value,
+                    })
                   }
                 />
               </div>
 
               <input
-                className="w-full bg-slate-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                w-full
+                bg-white
+                border
+                border-slate-300
+                text-slate-800
+                placeholder:text-slate-400
+                rounded-2xl
+                px-4
+                py-4
+                outline-none
+                focus:ring-4
+                focus:ring-blue-200
+                focus:border-blue-500
+                "
                 placeholder="仕掛け"
                 value={form.rig}
                 onChange={(e) =>
-                  setForm({ ...form, rig: e.target.value })
+                  setForm({
+                    ...form,
+                    rig: e.target.value,
+                  })
                 }
               />
 
               <textarea
-                className="w-full bg-slate-100 rounded-2xl px-4 py-4 min-h-[120px] outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                w-full
+                min-h-[120px]
+                bg-white
+                border
+                border-slate-300
+                text-slate-800
+                placeholder:text-slate-400
+                rounded-2xl
+                px-4
+                py-4
+                outline-none
+                focus:ring-4
+                focus:ring-blue-200
+                focus:border-blue-500
+                "
                 placeholder="コメント"
                 value={form.comment}
                 onChange={(e) =>
-                  setForm({ ...form, comment: e.target.value })
+                  setForm({
+                    ...form,
+                    comment: e.target.value,
+                  })
                 }
               />
             </div>
@@ -473,14 +836,34 @@ export default function Home() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={reset}
-                className="flex-1 bg-slate-200 text-slate-700 py-4 rounded-2xl font-semibold"
+                className="
+                flex-1
+                bg-slate-200
+                hover:bg-slate-300
+                transition
+                text-slate-700
+                py-4
+                rounded-2xl
+                font-bold
+                "
               >
                 キャンセル
               </button>
 
               <button
                 onClick={save}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 transition text-white py-4 rounded-2xl font-semibold shadow-lg"
+                className="
+                flex-1
+                bg-blue-600
+                hover:bg-blue-700
+                active:scale-[0.98]
+                transition
+                text-white
+                py-4
+                rounded-2xl
+                font-bold
+                shadow-xl
+                "
               >
                 保存
               </button>
