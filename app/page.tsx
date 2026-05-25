@@ -293,7 +293,7 @@ if (!user) {
         backdrop-blur-2xl
         rounded-t-[36px]
         pt-7 pb-10 px-6
-        shadow-lg
+        shadow-2xl
         "
       >
         {/* Google Login */}
@@ -404,52 +404,55 @@ if (!user) {
   return (
     <div className="relative h-screen overflow-hidden bg-black">
       {/* ===== Header ===== */}
-<div className="absolute top-0 left-0 right-0 z-20 px-4 pt-6">
-  <div className="backdrop-blur-xl bg-white/80 rounded-3xl px-4 py-3 shadow-xl flex items-center justify-between">
 
-    {/* title */}
-    <div className="flex items-center gap-2">
-      <span className="text-xl">🎣</span>
-      <h1 className="font-black text-slate-800 text-lg">
-        釣りマップ
-      </h1>
-    </div>
+      <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-safe pt-4">
+        <div className="
+        rounded-3xl
+        bg-white/90
+        backdrop-blur-xl
+        shadow-2xl
+        border
+        border-white/40
+        px-5
+        py-4
+        flex
+        items-center
+        justify-between
+        ">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎣</span>
 
-    {/* right icons */}
-    <div className="flex items-center gap-4">
-      <button className="text-xl">🔍</button>
+              <h1 className="font-black text-slate-800 text-xl">
+                Fishing Log
+              </h1>
+            </div>
 
-      <div className="relative">
-        <button className="text-xl">🔔</button>
-        <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+            <p className="text-xs text-slate-500 mt-1">
+              釣果 {records.length} 件
+            </p>
+          </div>
+
+          <button
+            onClick={logout}
+            className="
+            bg-red-500
+            hover:bg-red-600
+            active:scale-95
+            transition
+            text-white
+            px-4
+            py-2
+            rounded-2xl
+            text-sm
+            font-bold
+            shadow-lg
+            "
+          >
+            ログアウト
+          </button>
+        </div>
       </div>
-
-      <button onClick={logout}>
-        <div className="w-9 h-9 rounded-full bg-slate-300 overflow-hidden" />
-      </button>
-    </div>
-  </div>
-
-  {/* ===== Filter Chips ===== */}
-  <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
-    <button className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow">
-      📍 全ての釣果
-    </button>
-
-    <button className="bg-white px-4 py-2 rounded-full text-sm shadow">
-      魚種 ▼
-    </button>
-    <button className="bg-white px-4 py-2 rounded-full text-sm shadow">
-      時期 ▼
-    </button>
-    <button className="bg-white px-4 py-2 rounded-full text-sm shadow">
-      サイズ ▼
-    </button>
-    <button className="bg-white px-3 py-2 rounded-full text-sm shadow">
-      ⚙️
-    </button>
-  </div>
-</div>
 
       {/* ===== Google Map ===== */}
 
@@ -458,24 +461,6 @@ if (!user) {
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
         }
       >
-        {/* ===== Floating Buttons ===== */}
-<div className="absolute right-4 bottom-28 z-20 flex flex-col items-end gap-3">
-
-  {/* current location */}
-  <button className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-xl">
-    🎯
-  </button>
-
-  {/* add */}
-  <button
-    onClick={() => setMode('new')}
-    className="w-16 h-16 rounded-full bg-blue-600 text-white text-3xl shadow-lg flex items-center justify-center active:scale-95"
-  >
-    ＋
-  </button>
-
-  <p className="text-white text-xs mr-1">ピンを追加</p>
-</div>
         <GoogleMap
   mapContainerStyle={mapStyle}
   center={mapCenter}
@@ -529,53 +514,21 @@ if (!user) {
   }}
 >
           {records.map((r) => (
-            
-          
             <Marker
               key={r.id}
-              position={{ lat: r.lat, lng: r.lng }}
+              position={{
+                lat: r.lat,
+                lng: r.lng,
+              }}
               onClick={() => setSelected(r)}
               icon={{
-                url: "/images/fish-marker.png",
-                scaledSize: new google.maps.Size(28, 28),
-                anchor: new google.maps.Point(18, 18), // 中央に合わせる
+                url:
+                  'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
               }}
             />
-
-
           ))}
         </GoogleMap>
       </LoadScript>
-      {/* ===== Bottom Nav ===== */}
-<div className="absolute bottom-0 left-0 right-0 z-20 bg-white/90 backdrop-blur-xl border-t py-2 flex justify-around text-sm">
-
-  <div className="flex flex-col items-center text-blue-600">
-    <span>🗺️</span>
-    <span>マップ</span>
-  </div>
-
-  <div className="flex flex-col items-center text-slate-400">
-    <span>📄</span>
-    <span>記録</span>
-  </div>
-
-  <div className="flex flex-col items-center">
-    <div className="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl -mt-6 shadow-xl">
-      ＋
-    </div>
-  </div>
-
-  <div className="flex flex-col items-center text-slate-400">
-    <span>📊</span>
-    <span>統計</span>
-  </div>
-
-  <div className="flex flex-col items-center text-slate-400">
-    <span>👤</span>
-    <span>マイページ</span>
-  </div>
-</div>
-``
 
       {/* ===== Selected Card ===== */}
 
@@ -734,7 +687,7 @@ if (!user) {
           rounded-t-[36px]
           sm:rounded-[36px]
           p-6
-          shadow-lg
+          shadow-2xl
           max-h-[90vh]
           overflow-y-auto
           ">
