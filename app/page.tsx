@@ -129,6 +129,18 @@ const toDateTimeLocal = (date: any) => {
 };
   /* ===== Save ===== */
   const save = async () => {
+    const safeForm = {
+  fishType: String(form.fishType || ''),
+  size: String(form.size || ''),
+  weight: String(form.weight || ''),
+  depth: String(form.depth || ''),
+  rig: String(form.rig || ''),
+  comment: String(form.comment || ''),
+  date: typeof form.date === 'string'
+    ? form.date
+    : new Date().toISOString().slice(0, 16),
+};
+``
     if (!user) return;
 
     if (mode === 'new' && draftPos) {
@@ -153,7 +165,12 @@ const toDateTimeLocal = (date: any) => {
       ...form,
     };
 
-    await updateDoc(ref, updatedData);
+    
+await updateDoc(ref, {
+  ...safeForm,
+});
+console.log("FORM確認", form);
+
 
     setRecords((prev) =>
       prev.map((r) =>
