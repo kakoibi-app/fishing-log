@@ -73,6 +73,10 @@ export default function Home() {
   const [mode, setMode] = useState<'new' | 'edit' | null>(null);
 
   const [selected, setSelected] = useState<RecordType | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [groups, setGroups] = useState<any[]>([]);
+  const [currentGroupId, setCurrentGroupId] = useState<string | null>(null);
+
 
   const [pos, setPos] = useState<{
     lat: number;
@@ -180,14 +184,36 @@ const privacyText = `
   };
 
   /* ===== データ取得 ===== */
+  const fetchGroups = async () => {
+  if (!user) return;
+
+  const q = query(
+    collection(db, 'groups'),
+    where('members', 'array-contains', user.uid)
+  );
+
+  const snap = await getDocs(q);
+  const data: any[] = [];
+  snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
+  setGroups(data);
+};
 
   const fetchRecords = async () => {
   if (!user) return;
 
-  const q = query(
-    collection(db, 'records'),
-    where('userId', '==', user.uid)
-  );
+  let q;
+
+  if (currentGroupId) {
+    q = query(
+      collection(db, 'records'),
+      where('groupId', '==', currentGroupId)
+    );
+  } else {
+    q = query(
+      collection(db, 'records'),
+      where('userId', '==', user.uid)
+    );
+  }
 
   const snap = await getDocs(q);
   let data: any[] = [];
@@ -197,14 +223,18 @@ const privacyText = `
   const now = new Date();
 
   if (filter === 'today') {
-    data = data.filter((r) =>
-      r.date && new Date(r.date).toDateString() === now.toDateString()
+    data = data.filter(
+      (r) =>
+        r.date &&
+        new Date(r.date).toDateString() === now.toDateString()
     );
   }
 
   if (filter === 'week') {
-    data = data.filter((r) =>
-      r.date && now.getTime() - new Date(r.date).getTime() < 7 * 86400000
+    data = data.filter(
+      (r) =>
+        r.date &&
+        now.getTime() - new Date(r.date).getTime() < 7 * 86400000
     );
   }
 
@@ -213,7 +243,14 @@ const privacyText = `
 
   useEffect(() => {
   fetchRecords();
+  fetchGroups(); // 追加
 }, [user, filter]);
+
+useEffect(() => {
+  fetchRecords();
+}, [currentGroupId]);
+
+
   useEffect(() => {
   if (mode) {
     document.body.style.overflow = 'hidden';
@@ -255,6 +292,7 @@ const privacyText = `
           lat: pos.lat,
           lng: pos.lng,
           userId: user.uid,
+          groupId: currentGroupId ?? null,
         });
       }
 
@@ -914,6 +952,71 @@ select-none
     </div>
   </div>
 )}
+{/* メニューボタン */}
+
+<div
+  className="fixed bottom-6 left-6 w-14 h-14 bg-black text-white rounded-full flex items-center justify-center text-xl shadow-lg cursor-pointer z-50"
+  onClick={() => setMenuOpen(true)}
+>
+  ☰
+</div>
+
+{menuOpen && (
+  <div
+    className="fixed inset-0 z-50 bg-black/30"
+    onClick={() => setMenuOpen(false)}
+  >
+    <div
+      className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* グループ選択 */}
+      <select
+        value={currentGroupId ?? ''}
+        onChange={(e) =>
+          setCurrentGroupId(e.target.value || null)
+        }
+        className="w-full mb-3 border p-2 rounded"
+      >
+        <option value="">個人</option>
+          {groups.map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.name}
+            </option>
+          ))}
+
+      </select>
+
+      {/* グループ作成 */}
+      <button
+        className="w-full mb-3 bg-gray-100 p-2 rounded"
+        onClick={async () => {
+          const name = prompt('グループ名');
+          if (!name || !user) return;
+
+          await addDoc(collection(db, 'groups'), {
+            name,
+            ownerId: user.uid,
+            members: [user.uid],
+          });
+
+          fetchGroups();
+        }}
+      >
+        ＋ グループ作成
+      </button>
+
+      {/* ログアウト */}
+      <button
+        className="w-full bg-red-100 p-2 rounded"
+        onClick={logout}
+      >
+        ログアウト
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
   
