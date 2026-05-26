@@ -80,6 +80,9 @@ export default function Home() {
   } | null>(null);
 
   const [form, setForm] = useState(emptyForm);
+  const [groupMode, setGroupMode] = useState<'personal' | 'group'>('personal');
+  const [groups, setGroups] = useState<any[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
 
@@ -179,41 +182,85 @@ const privacyText = `
     setUser(null);
   };
 
+  const fetchGroups = async () => {
+  if (!user) return;
+
+  const q = query(
+    collection(db, 'groupMembers'),
+    where('userId', '==', user.uid)
+  );
+
+  const snap = await getDocs(q);
+
+  const groupIds: string[] = [];
+  snap.forEach(d => groupIds.push(d.data().groupId));
+
+  const gSnap = await getDocs(collection(db, 'groups'));
+
+  const list: any[] = [];
+  gSnap.forEach(g => {
+    if (groupIds.includes(g.id)) {
+      list.push({ id: g.id, ...g.data() });
+    }
+  });
+
+  setGroups(list);
+};
+
   /* ===== データ取得 ===== */
 
   const fetchRecords = async () => {
   if (!user) return;
 
-  const q = query(
-    collection(db, 'records'),
-    where('userId', '==', user.uid)
-  );
+  let q;
+
+  if (groupMode === 'personal' || !selectedGroup) {
+    q = query(
+      collection(db, 'records'),
+      where('userId', '==', user.uid)
+    );
+  } else {
+    q = query(
+      collection(db, 'records'),
+      where('groupId', '==', selectedGroup)
+    );
+  }
 
   const snap = await getDocs(q);
   let data: any[] = [];
 
-  snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
-
-  const now = new Date();
-
-  if (filter === 'today') {
-    data = data.filter((r) =>
-      r.date && new Date(r.date).toDateString() === now.toDateString()
-    );
-  }
-
-  if (filter === 'week') {
-    data = data.filter((r) =>
-      r.date && now.getTime() - new Date(r.date).getTime() < 7 * 86400000
-    );
-  }
+  snap.forEach(d => data.push({ id: d.id, ...d.data() }));
 
   setRecords(data);
+};
+
+const createGroup = async () => {
+  if (!user) return;
+
+  const inviteCode = Math.random().toString(36).substring(2, 8);
+
+  const docRef = await addDoc(collection(db, 'groups'), {
+    name: '新しいグループ',
+    ownerId: user.uid,
+    inviteCode,
+  });
+
+  await addDoc(collection(db, 'groupMembers'), {
+    groupId: docRef.id,
+    userId: user.uid,
+  });
+
+  fetchGroups();
 };
 
   useEffect(() => {
   fetchRecords();
 }, [user, filter]);
+
+useEffect(() => {
+  fetchGroups();
+}, [user]);
+
   useEffect(() => {
   if (mode) {
     document.body.style.overflow = 'hidden';
@@ -255,6 +302,7 @@ const privacyText = `
           lat: pos.lat,
           lng: pos.lng,
           userId: user.uid,
+          groupId: groupMode === 'group' ? selectedGroup : null
         });
       }
 
@@ -533,16 +581,42 @@ select-none
       <option value="week">7日間</option>
     </select>
 
-    {/* 右（サイズ小さく） */}
-    <button
-      onClick={logout}
-      className="bg-red-500 text-white px-2 py-1 rounded-lg text-xs"
+    <div className="flex gap-2 items-center">
+
+  {/* モード切替 */}
+  <select
+    value={groupMode}
+    onChange={(e) => setGroupMode(e.target.value as any)}
+    className="bg-gray-100 px-2 py-1 rounded text-sm"
+  >
+    <option value="personal">個人</option>
+    <option value="group">グループ</option>
+  </select>
+
+  {/* グループ選択 */}
+  {groupMode === 'group' && (
+    <select
+      onChange={(e) => setSelectedGroup(e.target.value)}
+      className="bg-gray-100 px-2 py-1 rounded text-sm"
     >
-      ログアウト
-    </button>
+      <option value="">選択</option>
+      {groups.map(g => (
+        <option key={g.id} value={g.id}>{g.name}</option>
+      ))}
+    </select>
+  )}
+
+  <button onClick={logout}>ログアウト</button>
+</div>
 
   </div>
 </div>
+<button
+  onClick={createGroup}
+  className="bg-green-500 text-white px-2 py-1 rounded text-sm"
+>
+  + グループ作成
+</button>
 
 
       {/* ===== Google Map ===== */}
@@ -615,10 +689,14 @@ select-none
       lng: r.lng,
     }}
     onClick={() => setSelected(r)}
+    
     icon={{
       url:
-        'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+        groupMode === 'group'
+          ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+          : 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
     }}
+
   />
 ))}
         </GoogleMap>
