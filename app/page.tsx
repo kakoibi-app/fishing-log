@@ -46,7 +46,7 @@ const emptyForm = {
 
 const mapStyle = {
   width: '100%',
-  height: '100vh',
+  height: '100dvh',
 };
 
 export default function Home() {
@@ -301,7 +301,6 @@ if (!user) {
         relative
         z-10
         bg-white/92
-        backdrop-blur-2xl
         rounded-t-[36px]
         pt-7 pb-10 px-6
         shadow-2xl
@@ -422,7 +421,6 @@ select-none
         <div className="
         rounded-3xl
         bg-white/90
-        backdrop-blur-xl
         shadow-2xl
         border
         border-white/40
@@ -451,7 +449,6 @@ select-none
             className="
             bg-red-500
             hover:bg-red-600
-            active:scale-95
             transition
             text-white
             px-4
@@ -471,12 +468,8 @@ select-none
       </div>
 
       {/* ===== Google Map ===== */}
-    <div
-  className={`
-    ${mode ? 'pointer-events-none' : ''}
-    relative z-0
-  `}
->
+    {!mode && (
+  <div className="relative z-0">
       <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
@@ -551,6 +544,7 @@ select-none
         </GoogleMap>
       </LoadScript>
       </div>
+      )}
 
       {/* ===== Selected Card ===== */}
 
@@ -559,7 +553,6 @@ select-none
           <div className="
           rounded-[32px]
           bg-white/95
-          backdrop-blur-xl
           shadow-2xl
           border
           border-white/40
@@ -700,18 +693,17 @@ select-none
       {(mode === 'new' || mode === 'edit') && (
         <div
   className="
-  fixed
-  inset-0
-  z-40
+  absolute
+  top-0
+  left-0
+  w-full
+  h-full
+  z-[9999]
   bg-black/50
   flex
   items-end
   sm:items-center
   justify-center
-  z-[9999]
-  touch-auto
-  pointer-events-auto
-  overscroll-contain
   "
   style={{
     WebkitOverflowScrolling: 'touch',
@@ -719,16 +711,16 @@ select-none
   }}
 >
           <div className="
-          bg-white
-          w-full
-          sm:max-w-lg
-          rounded-t-[36px]
-          sm:rounded-[36px]
-          p-6
-          shadow-2xl
-          max-h-[90vh]
-          overflow-y-auto
-          ">
+  bg-white
+  w-full
+  sm:max-w-lg
+  rounded-t-[36px]
+  sm:rounded-[36px]
+  shadow-2xl
+  flex
+  flex-col
+  max-h-[90dvh]
+  ">
             <div className="
             w-16
             h-1.5
@@ -761,7 +753,14 @@ select-none"
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div
+  className="
+  space-y-4
+  overflow-y-auto
+  px-6
+  pb-6
+  "
+>
               <input
                 className="
                 w-full
