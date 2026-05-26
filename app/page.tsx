@@ -425,63 +425,42 @@ select-none
     <div className="relative h-screen overflow-hidden bg-black">
       {/* ===== Header ===== */}
 
-      <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-safe pt-4">
-        <div className="
-        rounded-3xl
-        bg-white/90
-        shadow-2xl
-        border
-        border-white/40
-        px-5
-        py-4
-        flex
-        items-center
-        justify-between
-        ">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🎣</span>
+      <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-4">
+  <div className="rounded-2xl bg-white/90 backdrop-blur shadow-lg px-4 py-3 flex items-center justify-between">
 
-              <h1 className="font-black text-slate-800 text-xl">
-                Fishing Log
-              </h1>
-            </div>
-
-            <p className="text-xs text-slate-500 mt-1">
-              釣果 {records.length} 件
-            </p>
-          </div>
-          <select
-  value={filter}
-  onChange={(e) => setFilter(e.target.value as any)}
-  className="border px-2 py-1"
->
-  <option value="all">全期間</option>
-  <option value="today">今日</option>
-  <option value="week">7日間</option>
-</select>
-
-          <button
-            onClick={logout}
-            className="
-            bg-red-500
-            hover:bg-red-600
-            transition
-            text-white
-            px-4
-            py-2
-            rounded-2xl
-            text-sm
-            font-bold
-            shadow-lg
-cursor-pointer
-select-none
-            "
-          >
-            ログアウト
-          </button>
-        </div>
+    {/* 左 */}
+    <div>
+      <div className="flex items-center gap-2">
+        <span>🎣</span>
+        <h1 className="font-bold text-lg">Fishing Log</h1>
       </div>
+      <p className="text-xs text-gray-500 mt-1">
+        釣果 {records.length} 件
+      </p>
+    </div>
+
+    {/* 中央 */}
+    <select
+      value={filter}
+      onChange={(e) => setFilter(e.target.value as any)}
+      className="bg-gray-100 px-2 py-1 rounded text-sm"
+    >
+      <option value="all">全期間</option>
+      <option value="today">今日</option>
+      <option value="week">7日間</option>
+    </select>
+
+    {/* 右（サイズ小さく） */}
+    <button
+      onClick={logout}
+      className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs"
+    >
+      ログアウト
+    </button>
+
+  </div>
+</div>
+
 
       {/* ===== Google Map ===== */}
     {!mode && (
@@ -561,8 +540,8 @@ select-none
 ))}
         </GoogleMap>
       </LoadScript>
-      <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded text-sm z-10">
-  📍 地図をタップしてピンを追加
+      <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
+  📍 タップでピン追加
 </div>
       </div>
       )}
@@ -732,53 +711,94 @@ select-none
       </div>
 
       {/* スクロール部分 */}
-      <div className="overflow-y-auto px-6 pb-4 space-y-3">
+      <div className="overflow-y-auto px-6 pb-4 space-y-4">
 
-        <input className="w-full border p-3 rounded"
-          placeholder="魚種"
-          value={form.fishType}
-          onChange={(e) => setForm({ ...form, fishType: e.target.value })}
-        />
+  {/* 魚種（メイン） */}
+  <div>
+    <p className="text-xs text-gray-500 mb-1">魚種</p>
+    <input
+      className="w-full border-2 border-blue-300 p-4 rounded-xl text-base"
+      placeholder="例：シーバス"
+      value={form.fishType}
+      onChange={(e) =>
+        setForm({ ...form, fishType: e.target.value })
+      }
+    />
+  </div>
 
-        <input type="datetime-local"
-          className="w-full border p-3 rounded"
-          value={form.date}
-          onChange={(e) => setForm({ ...form, date: e.target.value })}
-        />
+  {/* 日付 */}
+  <div>
+    <p className="text-xs text-gray-500 mb-1">日時</p>
+    <input
+      type="datetime-local"
+      className="w-full border p-3 rounded-xl text-sm"
+      value={form.date}
+      onChange={(e) =>
+        setForm({ ...form, date: e.target.value })
+      }
+    />
+  </div>
 
-        <div className="grid grid-cols-3 gap-2">
-          <input className="border p-3 rounded"
-            placeholder="サイズ"
-            value={form.size}
-            onChange={(e) => setForm({ ...form, size: e.target.value })}
-          />
+  {/* サイズ系 */}
+  <div>
+    <p className="text-xs text-gray-500 mb-1">サイズ / 重量 / 水深</p>
+    <div className="grid grid-cols-3 gap-2">
+      <input
+        className="border p-3 rounded-xl text-sm"
+        placeholder="サイズ"
+        value={form.size}
+        onChange={(e) =>
+          setForm({ ...form, size: e.target.value })
+        }
+      />
 
-          <input className="border p-3 rounded"
-            placeholder="重量"
-            value={form.weight}
-            onChange={(e) => setForm({ ...form, weight: e.target.value })}
-          />
+      <input
+        className="border p-3 rounded-xl text-sm"
+        placeholder="重量"
+        value={form.weight}
+        onChange={(e) =>
+          setForm({ ...form, weight: e.target.value })
+        }
+      />
 
-          <input className="border p-3 rounded"
-            placeholder="水深"
-            value={form.depth}
-            onChange={(e) => setForm({ ...form, depth: e.target.value })}
-          />
-        </div>
+      <input
+        className="border p-3 rounded-xl text-sm"
+        placeholder="水深"
+        value={form.depth}
+        onChange={(e) =>
+          setForm({ ...form, depth: e.target.value })
+        }
+      />
+    </div>
+  </div>
 
-        <input className="w-full border p-3 rounded"
-          placeholder="仕掛け"
-          value={form.rig}
-          onChange={(e) => setForm({ ...form, rig: e.target.value })}
-        />
+  {/* 仕掛け */}
+  <div>
+    <p className="text-xs text-gray-500 mb-1">仕掛け</p>
+    <input
+      className="w-full border p-3 rounded-xl text-sm"
+      placeholder="ルアー / エサなど"
+      value={form.rig}
+      onChange={(e) =>
+        setForm({ ...form, rig: e.target.value })
+      }
+    />
+  </div>
 
-        <textarea className="w-full border p-3 rounded min-h-[100px]"
-          placeholder="コメント"
-          value={form.comment}
-          onChange={(e) => setForm({ ...form, comment: e.target.value })}
-        />
+  {/* コメント */}
+  <div>
+    <p className="text-xs text-gray-500 mb-1">コメント</p>
+    <textarea
+      className="w-full border p-3 rounded-xl min-h-[120px] text-sm"
+      placeholder="メモや状況など"
+      value={form.comment}
+      onChange={(e) =>
+        setForm({ ...form, comment: e.target.value })
+      }
+    />
+  </div>
 
-      </div>
+</div>
 
       {/* フッター */}
       <div className="flex gap-2 p-4 border-t">
