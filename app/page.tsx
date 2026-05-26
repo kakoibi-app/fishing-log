@@ -422,11 +422,11 @@ select-none
 }
 
   return (
-    <div className="relative h-screen overflow-hidden bg-black">
+    <div className="relative h-screen overflow-visible bg-black">
       {/* ===== Header ===== */}
 
       <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-4">
-  <div className="rounded-2xl bg-white/90 backdrop-blur shadow-lg px-4 py-3 flex items-center justify-between">
+  <div className="rounded-2xl backdrop-blur shadow-lg px-4 py-3 flex items-center justify-between">
 
     {/* 左 */}
     <div>
@@ -464,7 +464,7 @@ select-none
 
       {/* ===== Google Map ===== */}
     {!mode && (
-  <div className="relative z-0">
+  <div className="relative z-0 touch-pan-x touch-pan-y">
       <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
@@ -688,7 +688,7 @@ select-none
       {/* ===== Modal ===== */}
 
       {(mode === 'new' || mode === 'edit') && (
-  <div className="fixed inset-0 z-[9999] bg-black/50 flex items-end sm:items-center justify-center"
+  <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center"
        onTouchStart={(e) => e.stopPropagation()}
        onClick={(e) => e.stopPropagation()}
   >
