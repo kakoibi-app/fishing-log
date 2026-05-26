@@ -543,9 +543,7 @@ select-none
     ],
   }}
 >
-<div className="fixed top-20 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded text-sm z-10">
-  📍 地図をタップしてピンを追加
-</div>
+
 
           {records.map((r) => (
   <Marker
@@ -561,9 +559,11 @@ select-none
     }}
   />
 ))}
-``
         </GoogleMap>
       </LoadScript>
+      <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded text-sm z-10">
+  📍 地図をタップしてピンを追加
+</div>
       </div>
       )}
 
@@ -709,307 +709,97 @@ select-none
       {/* ===== Modal ===== */}
 
       {(mode === 'new' || mode === 'edit') && (
-        <div
-  className="
-  absolute
-  top-0
-  left-0
-  w-full
-  h-full
-  z-[9999]
-  bg-black/50
-  flex
-  items-end
-  sm:items-center
-  justify-center
-  "
-  style={{
-    WebkitOverflowScrolling: 'touch',
-    touchAction: 'auto',
-  }}
->
-          <div className="
-  bg-white
-  w-full
-  sm:max-w-lg
-  rounded-t-[36px]
-  sm:rounded-[36px]
-  shadow-2xl
-  flex
-  flex-col
-  max-h-[90dvh]
-  ">
-            <div className="
-            w-16
-            h-1.5
-            bg-slate-200
-            rounded-full
-            mx-auto
-            mb-5
-            sm:hidden
-            " />
+  <div className="fixed inset-0 z-[9999] bg-black/50 flex items-end sm:items-center justify-center"
+       onTouchStart={(e) => e.stopPropagation()}
+       onClick={(e) => e.stopPropagation()}
+  >
 
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-3xl font-black text-slate-800">
-                  🎣 釣果記録
-                </h2>
+    <div
+      className="bg-white w-full sm:max-w-lg rounded-t-[36px] sm:rounded-[36px] shadow-2xl flex flex-col max-h-[90dvh]"
+      onClick={(e) => e.stopPropagation()}
+    >
 
-                <p className="text-slate-500 mt-2">
-                  釣れた魚の情報を記録します
-                </p>
-              </div>
-
-              <button
-                onClick={reset}
-                className="text-slate-400 text-3xl
-cursor-pointer
-select-none"
-              >
-                ✕
-              </button>
-            </div>
-            <p className="text-xs text-gray-500">
-  ※ タップで入力できます
-</p>
-
-            <div
-  className="
-  space-y-4
-  overflow-y-auto
-  px-6
-  pb-6
-  "
->
-              <input
-                className="
-                w-full
-                bg-white
-                border
-                border-slate-300
-                text-slate-800
-                text-base
-                placeholder:text-slate-400
-                rounded-2xl
-                px-4
-                py-4
-                outline-none
-                focus:ring-4
-                focus:ring-blue-200
-                focus:border-blue-500
-                "
-                placeholder="魚種"
-                value={form.fishType}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    fishType: e.target.value,
-                  })
-                }
-              />
-
-              <input
-                type="datetime-local"
-                className="
-                w-full
-                bg-white
-                border
-                border-slate-300
-                text-slate-800
-                text-base
-                rounded-2xl
-                px-4
-                py-4
-                outline-none
-                focus:ring-4
-                focus:ring-blue-200
-                focus:border-blue-500
-                "
-                value={form.date}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    date: e.target.value,
-                  })
-                }
-              />
-
-              <div className="grid grid-cols-3 gap-3">
-                <input
-                  className="
-                  bg-white
-                  border
-                  border-slate-300
-                  text-slate-800
-                  text-base
-                  placeholder:text-slate-400
-                  rounded-2xl
-                  px-4
-                  py-4
-                  outline-none
-                  focus:ring-4
-                  focus:ring-blue-200
-                  focus:border-blue-500
-                  "
-                  placeholder="サイズ"
-                  value={form.size}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      size: e.target.value,
-                    })
-                  }
-                />
-
-                <input
-                  className="
-                  bg-white
-                  border
-                  border-slate-300
-                  text-slate-800
-                  text-base
-                  placeholder:text-slate-400
-                  rounded-2xl
-                  px-4
-                  py-4
-                  outline-none
-                  focus:ring-4
-                  focus:ring-blue-200
-                  focus:border-blue-500
-                  "
-                  placeholder="重量"
-                  value={form.weight}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      weight: e.target.value,
-                    })
-                  }
-                />
-
-                <input
-                  className="
-                  bg-white
-                  border
-                  border-slate-300
-                  text-slate-800
-                  text-base
-                  placeholder:text-slate-400
-                  rounded-2xl
-                  px-4
-                  py-4
-                  outline-none
-                  focus:ring-4
-                  focus:ring-blue-200
-                  focus:border-blue-500
-                  "
-                  placeholder="水深"
-                  value={form.depth}
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      depth: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <input
-                className="
-                w-full
-                bg-white
-                border
-                border-slate-300
-                text-slate-800
-                text-base
-                placeholder:text-slate-400
-                rounded-2xl
-                px-4
-                py-4
-                outline-none
-                focus:ring-4
-                focus:ring-blue-200
-                focus:border-blue-500
-                "
-                placeholder="仕掛け"
-                value={form.rig}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    rig: e.target.value,
-                  })
-                }
-              />
-
-              <textarea
-                className="
-                w-full
-                min-h-[120px]
-                bg-white
-                border
-                border-slate-300
-                text-slate-800
-                placeholder:text-slate-400
-                rounded-2xl
-                px-4
-                py-4
-                outline-none
-                focus:ring-4
-                focus:ring-blue-200
-                focus:border-blue-500
-                "
-                placeholder="コメント"
-                value={form.comment}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    comment: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={reset}
-                className="
-                flex-1
-                bg-slate-200
-                hover:bg-slate-300
-                transition
-                text-slate-700
-                py-4
-                rounded-2xl
-                font-bold
-cursor-pointer
-select-none
-                "
-              >
-                キャンセル
-              </button>
-
-              <button
-                onClick={save}
-                className="
-                flex-1
-                bg-blue-600
-                hover:bg-blue-700
-                transition
-                text-white
-                py-4
-                rounded-2xl
-                font-bold
-                shadow-x
-cursor-pointer
-select-none
-                "
-              >
-                保存
-              </button>
-            </div>
-          </div>
+      {/* ヘッダー */}
+      <div className="px-6 pt-6 pb-2">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold">🎣 釣果記録</h2>
+          <button onClick={reset} className="text-xl px-2">✕</button>
         </div>
-      )}
+
+        <p className="text-xs text-gray-500 mt-2">
+          ※ タップで操作できます
+        </p>
+      </div>
+
+      {/* スクロール部分 */}
+      <div className="overflow-y-auto px-6 pb-4 space-y-3">
+
+        <input className="w-full border p-3 rounded"
+          placeholder="魚種"
+          value={form.fishType}
+          onChange={(e) => setForm({ ...form, fishType: e.target.value })}
+        />
+
+        <input type="datetime-local"
+          className="w-full border p-3 rounded"
+          value={form.date}
+          onChange={(e) => setForm({ ...form, date: e.target.value })}
+        />
+
+        <div className="grid grid-cols-3 gap-2">
+          <input className="border p-3 rounded"
+            placeholder="サイズ"
+            value={form.size}
+            onChange={(e) => setForm({ ...form, size: e.target.value })}
+          />
+
+          <input className="border p-3 rounded"
+            placeholder="重量"
+            value={form.weight}
+            onChange={(e) => setForm({ ...form, weight: e.target.value })}
+          />
+
+          <input className="border p-3 rounded"
+            placeholder="水深"
+            value={form.depth}
+            onChange={(e) => setForm({ ...form, depth: e.target.value })}
+          />
+        </div>
+
+        <input className="w-full border p-3 rounded"
+          placeholder="仕掛け"
+          value={form.rig}
+          onChange={(e) => setForm({ ...form, rig: e.target.value })}
+        />
+
+        <textarea className="w-full border p-3 rounded min-h-[100px]"
+          placeholder="コメント"
+          value={form.comment}
+          onChange={(e) => setForm({ ...form, comment: e.target.value })}
+        />
+
+      </div>
+
+      {/* フッター */}
+      <div className="flex gap-2 p-4 border-t">
+        <button
+          onClick={reset}
+          className="flex-1 bg-gray-300 py-3 rounded"
+        >
+          キャンセル
+        </button>
+
+        <button
+          onClick={save}
+          className="flex-1 bg-blue-600 text-white py-3 rounded"
+        >
+          保存
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
     </div>
   );
 }
