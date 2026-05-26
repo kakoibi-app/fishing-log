@@ -453,7 +453,7 @@ select-none
     {/* 右（サイズ小さく） */}
     <button
       onClick={logout}
-      className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs"
+      className="bg-red-500 text-white px-2 py-1 rounded-lg text-xs"
     >
       ログアウト
     </button>
@@ -540,7 +540,7 @@ select-none
 ))}
         </GoogleMap>
       </LoadScript>
-      <div className="fixed top-18 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
+      <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
   📍 タップでピン追加
 </div>
       </div>
