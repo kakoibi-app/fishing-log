@@ -325,10 +325,10 @@ if (!user) {
           text-white
           text-xl
           font-bold
-          active:scale-[0.98]
           transition
-          cursor-pointer
-touch-manipulation
+          touch-manipulation
+cursor-pointer
+select-none
           "
         >
   <div className="bg-white rounded-full p-2">
@@ -460,8 +460,9 @@ touch-manipulation
             text-sm
             font-bold
             shadow-lg
-            cursor-pointer
-touch-manipulation
+            touch-manipulation
+cursor-pointer
+select-none
             "
           >
             ログアウト
@@ -596,8 +597,9 @@ touch-manipulation
                 text-lg
                 hover:text-slate-600
                 transition
-                cursor-pointer
-touch-manipulation
+                touch-manipulation
+cursor-pointer
+select-none
                 "
               >
                 ✕
@@ -657,14 +659,14 @@ touch-manipulation
                 flex-1
                 bg-blue-600
                 hover:bg-blue-700
-                active:scale-[0.98]
                 transition
                 text-white
                 py-3
                 rounded-2xl
                 font-bold
-                cursor-pointer
-touch-manipulation
+                touch-manipulation
+cursor-pointer
+select-none
                 "
               >
                 編集
@@ -676,14 +678,14 @@ touch-manipulation
                 flex-1
                 bg-red-500
                 hover:bg-red-600
-                active:scale-[0.98]
                 transition
                 text-white
                 py-3
                 rounded-2xl
                 font-bold
-                cursor-pointer
-touch-manipulation
+                touch-manipulation
+cursor-pointer
+select-none
                 "
               >
                 削除
@@ -701,8 +703,7 @@ touch-manipulation
   fixed
   inset-0
   z-40
-  bg-black/40
-  backdrop-blur-sm
+  bg-black/50
   flex
   items-end
   sm:items-center
@@ -752,8 +753,9 @@ touch-manipulation
               <button
                 onClick={reset}
                 className="text-slate-400 text-3xl
-                cursor-pointer
-touch-manipulation"
+                touch-manipulation
+cursor-pointer
+select-none"
               >
                 ✕
               </button>
@@ -978,8 +980,9 @@ pointer-events-auto
                 py-4
                 rounded-2xl
                 font-bold
-                cursor-pointer
-touch-manipulation
+                touch-manipulation
+cursor-pointer
+select-none
                 "
               >
                 キャンセル
@@ -991,15 +994,15 @@ touch-manipulation
                 flex-1
                 bg-blue-600
                 hover:bg-blue-700
-                active:scale-[0.98]
                 transition
                 text-white
                 py-4
                 rounded-2xl
                 font-bold
                 shadow-xl
-                cursor-pointer
-touch-manipulation
+                touch-manipulation
+cursor-pointer
+select-none
                 "
               >
                 保存
