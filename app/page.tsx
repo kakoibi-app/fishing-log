@@ -799,9 +799,9 @@ select-none
       </div>
 
       {/* ✅ ここに広告 */}
-      <div className="px-4 pb-2">
+      {/*<div className="px-4 pb-2">
         <AdBanner />
-      </div>
+      </div>*/}
 
       {/* スクロール部分 */}
       <div className="overflow-y-auto px-6 pb-4 space-y-4">
