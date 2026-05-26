@@ -443,7 +443,7 @@ select-none
     <select
       value={filter}
       onChange={(e) => setFilter(e.target.value as any)}
-      className="bg-gray-100 px-2 py-1 rounded text-sm"
+      className="bg-gray-100 px-2 py-1 rounded text-sm text-gray-900"
     >
       <option value="all">全期間</option>
       <option value="today">今日</option>
@@ -512,7 +512,7 @@ select-none
     mapTypeControl: false,
     fullscreenControl: false,
     clickableIcons: false,
-    gestureHandling: 'cooperative',
+    gestureHandling: 'greed',
     minZoom: 3,
     styles: [
       {
@@ -540,7 +540,7 @@ select-none
 ))}
         </GoogleMap>
       </LoadScript>
-      <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
+      <div className="fixed top-40 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
   📍 タップでピン追加
 </div>
       </div>
@@ -715,7 +715,7 @@ select-none
 
   {/* 魚種（メイン） */}
   <div>
-    <p className="text-xs text-gray-500 mb-1">魚種</p>
+    <p className="text-xs text-gray-800 mb-1">魚種</p>
     <input
       className="w-full border-2 border-blue-300 p-4 rounded-xl text-base"
       placeholder="例：シーバス"
@@ -728,7 +728,7 @@ select-none
 
   {/* 日付 */}
   <div>
-    <p className="text-xs text-gray-500 mb-1">日時</p>
+    <p className="text-xs text-gray-800 mb-1">日時</p>
     <input
       type="datetime-local"
       className="w-full border p-3 rounded-xl text-sm"
@@ -741,7 +741,7 @@ select-none
 
   {/* サイズ系 */}
   <div>
-    <p className="text-xs text-gray-500 mb-1">サイズ / 重量 / 水深</p>
+    <p className="text-xs text-gray-800 mb-1">サイズ / 重量 / 水深</p>
     <div className="grid grid-cols-3 gap-2">
       <input
         className="border p-3 rounded-xl text-sm"
@@ -753,7 +753,7 @@ select-none
       />
 
       <input
-        className="border p-3 rounded-xl text-sm"
+        className="border p-3 rounded-xl text-sm text-gray-800"
         placeholder="重量"
         value={form.weight}
         onChange={(e) =>
@@ -762,7 +762,7 @@ select-none
       />
 
       <input
-        className="border p-3 rounded-xl text-sm"
+        className="border p-3 rounded-xl text-sm text-gray-800"
         placeholder="水深"
         value={form.depth}
         onChange={(e) =>
@@ -774,7 +774,7 @@ select-none
 
   {/* 仕掛け */}
   <div>
-    <p className="text-xs text-gray-500 mb-1">仕掛け</p>
+    <p className="text-xs text-gray-800 mb-1">仕掛け</p>
     <input
       className="w-full border p-3 rounded-xl text-sm"
       placeholder="ルアー / エサなど"
@@ -787,7 +787,7 @@ select-none
 
   {/* コメント */}
   <div>
-    <p className="text-xs text-gray-500 mb-1">コメント</p>
+    <p className="text-xs text-gray-800 mb-1">コメント</p>
     <textarea
       className="w-full border p-3 rounded-xl min-h-[120px] text-sm"
       placeholder="メモや状況など"
