@@ -145,6 +145,17 @@ export default function Home() {
   useEffect(() => {
     fetchRecords();
   }, [user]);
+  useEffect(() => {
+  if (mode) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'auto';
+  }
+
+  return () => {
+    document.body.style.overflow = 'auto';
+  };
+}, [mode]);
 
   /* ===== Map Click ===== */
 
@@ -455,7 +466,13 @@ if (!user) {
       </div>
 
       {/* ===== Google Map ===== */}
-
+    <div
+  className={
+    mode
+      ? 'pointer-events-none'
+      : ''
+  }
+>
       <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
@@ -529,6 +546,7 @@ if (!user) {
           ))}
         </GoogleMap>
       </LoadScript>
+      </div>
 
       {/* ===== Selected Card ===== */}
 
@@ -669,17 +687,25 @@ if (!user) {
       {/* ===== Modal ===== */}
 
       {(mode === 'new' || mode === 'edit') && (
-        <div className="
-        fixed
-        inset-0
-        z-40
-        bg-black/40
-        backdrop-blur-sm
-        flex
-        items-end
-        sm:items-center
-        justify-center
-        ">
+        <div
+  className="
+  fixed
+  inset-0
+  z-40
+  bg-black/40
+  backdrop-blur-sm
+  flex
+  items-end
+  sm:items-center
+  justify-center
+  touch-auto
+  z-[9999]
+  "
+  style={{
+    WebkitOverflowScrolling: 'touch',
+    touchAction: 'auto',
+  }}
+>
           <div className="
           bg-white
           w-full
@@ -728,11 +754,13 @@ if (!user) {
                 border
                 border-slate-300
                 text-slate-800
+                text-base
                 placeholder:text-slate-400
                 rounded-2xl
                 px-4
                 py-4
                 outline-none
+                touch-manipulation
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
@@ -755,10 +783,12 @@ if (!user) {
                 border
                 border-slate-300
                 text-slate-800
+                text-base
                 rounded-2xl
                 px-4
                 py-4
                 outline-none
+                touch-manipulation
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
@@ -779,11 +809,13 @@ if (!user) {
                   border
                   border-slate-300
                   text-slate-800
+                  text-base
                   placeholder:text-slate-400
                   rounded-2xl
                   px-4
                   py-4
                   outline-none
+                  touch-manipulation
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
@@ -804,11 +836,13 @@ if (!user) {
                   border
                   border-slate-300
                   text-slate-800
+                  text-base
                   placeholder:text-slate-400
                   rounded-2xl
                   px-4
                   py-4
                   outline-none
+                  touch-manipulation
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
@@ -829,11 +863,13 @@ if (!user) {
                   border
                   border-slate-300
                   text-slate-800
+                  text-base
                   placeholder:text-slate-400
                   rounded-2xl
                   px-4
                   py-4
                   outline-none
+                  touch-manipulation
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
@@ -856,11 +892,13 @@ if (!user) {
                 border
                 border-slate-300
                 text-slate-800
+                text-base
                 placeholder:text-slate-400
                 rounded-2xl
                 px-4
                 py-4
                 outline-none
+                touch-manipulation
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
