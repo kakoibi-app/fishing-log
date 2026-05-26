@@ -432,7 +432,7 @@ select-none
     <div>
       <div className="flex items-center gap-2">
         <span>🎣</span>
-        <h1 className="font-bold text-lg">Fishing Log</h1>
+        <h1 className="font-bold text-slate-800 text-lg">Fishing Log</h1>
       </div>
       <p className="text-xs text-gray-500 mt-1">
         釣果 {records.length} 件
@@ -443,7 +443,7 @@ select-none
     <select
       value={filter}
       onChange={(e) => setFilter(e.target.value as any)}
-      className="bg-gray-100 px-2 py-1 rounded text-sm text-gray-900"
+      className="bg-gray-100 px-2 py-1 rounded text-sm text-slate-500"
     >
       <option value="all">全期間</option>
       <option value="today">今日</option>
@@ -512,7 +512,7 @@ select-none
     mapTypeControl: false,
     fullscreenControl: false,
     clickableIcons: false,
-    gestureHandling: 'greed',
+    gestureHandling: 'greedy',
     minZoom: 3,
     styles: [
       {
@@ -701,7 +701,7 @@ select-none
       {/* ヘッダー */}
       <div className="px-6 pt-6 pb-2">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">🎣 釣果記録</h2>
+          <h2 className="text-2xl text-slate-800 font-bold">🎣 釣果記録</h2>
           <button onClick={reset} className="text-xl px-2">✕</button>
         </div>
 
@@ -717,7 +717,7 @@ select-none
   <div>
     <p className="text-xs text-gray-800 mb-1">魚種</p>
     <input
-      className="w-full border-2 border-blue-300 p-4 rounded-xl text-base"
+      className="w-full border-2 border-blue-300 p-4 rounded-xl text-base text-slate-500"
       placeholder="例：シーバス"
       value={form.fishType}
       onChange={(e) =>
@@ -731,7 +731,8 @@ select-none
     <p className="text-xs text-gray-800 mb-1">日時</p>
     <input
       type="datetime-local"
-      className="w-full border p-3 rounded-xl text-sm"
+      className="w-full border p-3 rounded-xl text-sm text-slate-500"
+      placeholder="日時"
       value={form.date}
       onChange={(e) =>
         setForm({ ...form, date: e.target.value })
@@ -744,7 +745,7 @@ select-none
     <p className="text-xs text-gray-800 mb-1">サイズ / 重量 / 水深</p>
     <div className="grid grid-cols-3 gap-2">
       <input
-        className="border p-3 rounded-xl text-sm"
+        className="border p-3 rounded-xl text-sm text-slate-500"
         placeholder="サイズ"
         value={form.size}
         onChange={(e) =>
@@ -753,7 +754,7 @@ select-none
       />
 
       <input
-        className="border p-3 rounded-xl text-sm text-gray-800"
+        className="border p-3 rounded-xl text-sm text-slate-500"
         placeholder="重量"
         value={form.weight}
         onChange={(e) =>
@@ -762,7 +763,7 @@ select-none
       />
 
       <input
-        className="border p-3 rounded-xl text-sm text-gray-800"
+        className="border p-3 rounded-xl text-sm text-slate-500"
         placeholder="水深"
         value={form.depth}
         onChange={(e) =>
@@ -776,7 +777,7 @@ select-none
   <div>
     <p className="text-xs text-gray-800 mb-1">仕掛け</p>
     <input
-      className="w-full border p-3 rounded-xl text-sm"
+      className="w-full border p-3 rounded-xl text-sm text-slate-500"
       placeholder="ルアー / エサなど"
       value={form.rig}
       onChange={(e) =>
@@ -789,7 +790,7 @@ select-none
   <div>
     <p className="text-xs text-gray-800 mb-1">コメント</p>
     <textarea
-      className="w-full border p-3 rounded-xl min-h-[120px] text-sm"
+      className="w-full border p-3 rounded-xl min-h-[120px] text-sm text-slate-500"
       placeholder="メモや状況など"
       value={form.comment}
       onChange={(e) =>
@@ -804,7 +805,7 @@ select-none
       <div className="flex gap-2 p-4 border-t">
         <button
           onClick={reset}
-          className="flex-1 bg-gray-300 py-3 rounded"
+          className="flex-1 bg-gray-500 py-3 rounded"
         >
           キャンセル
         </button>
