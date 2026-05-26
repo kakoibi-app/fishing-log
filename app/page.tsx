@@ -109,6 +109,26 @@ export default function Home() {
 
     return 9;
   });
+  const AdBanner = () => {
+  useEffect(() => {
+    try {
+      (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+      (window as any).adsbygoogle.push({});
+    } catch (e) {}
+  }, []);
+
+  return (
+    <ins
+      className="adsbygoogle"
+      style={{ display: 'block' }}
+      data-ad-client="ca-pub-6308667358686884"
+      data-ad-slot="XXXXXXXXXX" // ← 自分の広告ユニットID
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    />
+  );
+};
+
   const termsText = `
 本アプリは釣果記録および位置情報の保存を目的としたサービスです。
 
@@ -603,8 +623,13 @@ select-none
 ))}
         </GoogleMap>
       </LoadScript>
+      
+      <div className="w-full px-2 py-2 bg-white">
+        <AdBanner />
+      </div>
+
       <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
-  📍 タップでピン追加
+  📍 MAPの任意の位置タップでピン追加
 </div>
       </div>
       )}
@@ -771,6 +796,11 @@ select-none
         <p className="text-xs text-gray-500 mt-2">
           ※ タップで操作できます
         </p>
+      </div>
+
+      {/* ✅ ここに広告 */}
+      <div className="px-4 pb-2">
+        <AdBanner />
       </div>
 
       {/* スクロール部分 */}
