@@ -48,7 +48,22 @@ const mapStyle = {
   width: '100%',
   height: '100dvh',
 };
+const PolicyModal = ({ title, content, onClose }: any) => (
+  <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center">
+    <div className="bg-white w-[90%] max-w-md rounded-xl shadow-xl max-h-[80vh] flex flex-col">
 
+      <div className="p-4 border-b flex justify-between">
+        <h2 className="font-bold text-lg text-gray-900">{title}</h2>
+        <button onClick={onClose}>✕</button>
+      </div>
+
+      <div className="p-4 overflow-y-auto text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+        {content}
+      </div>
+
+    </div>
+  </div>
+);
 export default function Home() {
   const [filter, setFilter] = useState<'all' | 'today' | 'week'>('all');
   const [user, setUser] = useState<any>(null);
@@ -65,6 +80,8 @@ export default function Home() {
   } | null>(null);
 
   const [form, setForm] = useState(emptyForm);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const [mapCenter, setMapCenter] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -92,6 +109,29 @@ export default function Home() {
 
     return 9;
   });
+  const termsText = `
+本アプリは釣果記録および位置情報の保存を目的としたサービスです。
+
+・ユーザーは自身の責任において本サービスを利用するものとします
+・不正な用途での利用は禁止します
+・本サービスの内容の正確性は保証されません
+・本サービス利用による損害について一切責任を負いません
+
+本規約は予告なく変更される場合があります。
+`;
+
+const privacyText = `
+本アプリでは以下の情報を取得します：
+
+・Googleアカウント情報（ログインのため）
+・位置情報（釣果記録のため）
+・入力された釣果データ
+
+これらはサービス提供の目的のみに利用され、
+第三者に提供することはありません。
+
+お問い合わせ：kakoibi.official@gmail.com
+`;
   const mapRef = useRef<google.maps.Map | null>(null);
 
   /* ===== Auth ===== */
@@ -273,6 +313,7 @@ export default function Home() {
 
 if (!user) {
   return (
+    <>
     <div
       className="
       relative
@@ -405,11 +446,13 @@ select-none
           "
         >
           ログインすることで、
-          <span className="text-blue-600 font-semibold">
+          <span className="text-blue-600 font-semibold"
+          onClick={() => setShowTerms(true)}>
             利用規約
           </span>
           と
-          <span className="text-blue-600 font-semibold">
+          <span className="text-blue-600 font-semibold"
+          onClick={() => setShowPrivacy(true)}>
             プライバシーポリシー
           </span>
           に
@@ -417,9 +460,29 @@ select-none
           同意したものとみなされます。
         </p>
       </div>
+      
     </div>
+    
+{showTerms && (
+        <PolicyModal
+          title="利用規約"
+          content={termsText}
+          onClose={() => setShowTerms(false)}
+        />
+      )}
+
+      {showPrivacy && (
+        <PolicyModal
+          title="プライバシーポリシー"
+          content={privacyText}
+          onClose={() => setShowPrivacy(false)}
+        />
+      )}
+    </>
   );
 }
+
+
 
   return (
     <div className="relative h-screen overflow-visible bg-black">
@@ -823,4 +886,5 @@ select-none
 )}
     </div>
   );
+  
 }
