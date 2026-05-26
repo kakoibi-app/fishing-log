@@ -327,6 +327,8 @@ if (!user) {
           font-bold
           active:scale-[0.98]
           transition
+          cursor-pointer
+touch-manipulation
           "
         >
   <div className="bg-white rounded-full p-2">
@@ -458,6 +460,8 @@ if (!user) {
             text-sm
             font-bold
             shadow-lg
+            cursor-pointer
+touch-manipulation
             "
           >
             ログアウト
@@ -467,11 +471,10 @@ if (!user) {
 
       {/* ===== Google Map ===== */}
     <div
-  className={
-    mode
-      ? 'pointer-events-none'
-      : ''
-  }
+  className={`
+    ${mode ? 'pointer-events-none' : ''}
+    relative z-0
+  `}
 >
       <LoadScript
         googleMapsApiKey={
@@ -520,7 +523,7 @@ if (!user) {
     mapTypeControl: false,
     fullscreenControl: false,
     clickableIcons: false,
-    gestureHandling: 'greedy',
+    gestureHandling: 'cooperative',
     minZoom: 3,
     styles: [
       {
@@ -593,6 +596,8 @@ if (!user) {
                 text-lg
                 hover:text-slate-600
                 transition
+                cursor-pointer
+touch-manipulation
                 "
               >
                 ✕
@@ -658,6 +663,8 @@ if (!user) {
                 py-3
                 rounded-2xl
                 font-bold
+                cursor-pointer
+touch-manipulation
                 "
               >
                 編集
@@ -675,6 +682,8 @@ if (!user) {
                 py-3
                 rounded-2xl
                 font-bold
+                cursor-pointer
+touch-manipulation
                 "
               >
                 削除
@@ -698,8 +707,10 @@ if (!user) {
   items-end
   sm:items-center
   justify-center
-  touch-auto
   z-[9999]
+  touch-auto
+  pointer-events-auto
+  overscroll-contain
   "
   style={{
     WebkitOverflowScrolling: 'touch',
@@ -740,7 +751,9 @@ if (!user) {
 
               <button
                 onClick={reset}
-                className="text-slate-400 text-3xl"
+                className="text-slate-400 text-3xl
+                cursor-pointer
+touch-manipulation"
               >
                 ✕
               </button>
@@ -764,6 +777,8 @@ if (!user) {
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
+                touch-auto
+pointer-events-auto
                 "
                 placeholder="魚種"
                 value={form.fishType}
@@ -792,6 +807,8 @@ if (!user) {
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
+                touch-auto
+pointer-events-auto
                 "
                 value={form.date}
                 onChange={(e) =>
@@ -819,6 +836,8 @@ if (!user) {
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
+                  touch-auto
+pointer-events-auto
                   "
                   placeholder="サイズ"
                   value={form.size}
@@ -846,6 +865,8 @@ if (!user) {
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
+                  touch-auto
+pointer-events-auto
                   "
                   placeholder="重量"
                   value={form.weight}
@@ -873,6 +894,8 @@ if (!user) {
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
+                  touch-auto
+pointer-events-auto
                   "
                   placeholder="水深"
                   value={form.depth}
@@ -902,6 +925,8 @@ if (!user) {
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
+                touch-auto
+pointer-events-auto
                 "
                 placeholder="仕掛け"
                 value={form.rig}
@@ -953,6 +978,8 @@ if (!user) {
                 py-4
                 rounded-2xl
                 font-bold
+                cursor-pointer
+touch-manipulation
                 "
               >
                 キャンセル
@@ -971,6 +998,8 @@ if (!user) {
                 rounded-2xl
                 font-bold
                 shadow-xl
+                cursor-pointer
+touch-manipulation
                 "
               >
                 保存
