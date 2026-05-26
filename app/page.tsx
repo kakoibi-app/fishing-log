@@ -50,6 +50,7 @@ const mapStyle = {
 };
 
 export default function Home() {
+  const [filter, setFilter] = useState<'all' | 'today' | 'week'>('all');
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<RecordType[]>([]);
@@ -121,30 +122,38 @@ export default function Home() {
   /* ===== データ取得 ===== */
 
   const fetchRecords = async () => {
-    if (!user) return;
+  if (!user) return;
 
-    const q = query(
-      collection(db, 'records'),
-      where('userId', '==', user.uid)
+  const q = query(
+    collection(db, 'records'),
+    where('userId', '==', user.uid)
+  );
+
+  const snap = await getDocs(q);
+  let data: any[] = [];
+
+  snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
+
+  const now = new Date();
+
+  if (filter === 'today') {
+    data = data.filter((r) =>
+      r.date && new Date(r.date).toDateString() === now.toDateString()
     );
+  }
 
-    const snap = await getDocs(q);
+  if (filter === 'week') {
+    data = data.filter((r) =>
+      r.date && now.getTime() - new Date(r.date).getTime() < 7 * 86400000
+    );
+  }
 
-    const data: any[] = [];
-
-    snap.forEach((d) => {
-      data.push({
-        id: d.id,
-        ...d.data(),
-      });
-    });
-
-    setRecords(data);
-  };
+  setRecords(data);
+};
 
   useEffect(() => {
-    fetchRecords();
-  }, [user]);
+  fetchRecords();
+}, [user, filter]);
   useEffect(() => {
   if (mode) {
     document.body.style.overflow = 'hidden';
@@ -325,7 +334,6 @@ if (!user) {
           text-xl
           font-bold
           transition
-          touch-manipulation
 cursor-pointer
 select-none
           "
@@ -443,6 +451,15 @@ select-none
               釣果 {records.length} 件
             </p>
           </div>
+          <select
+  value={filter}
+  onChange={(e) => setFilter(e.target.value as any)}
+  className="border px-2 py-1"
+>
+  <option value="all">全期間</option>
+  <option value="today">今日</option>
+  <option value="week">7日間</option>
+</select>
 
           <button
             onClick={logout}
@@ -457,7 +474,6 @@ select-none
             text-sm
             font-bold
             shadow-lg
-            touch-manipulation
 cursor-pointer
 select-none
             "
@@ -527,20 +543,25 @@ select-none
     ],
   }}
 >
+<div className="fixed top-20 left-1/2 -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded text-sm z-10">
+  📍 地図をタップしてピンを追加
+</div>
+
           {records.map((r) => (
-            <Marker
-              key={r.id}
-              position={{
-                lat: r.lat,
-                lng: r.lng,
-              }}
-              onClick={() => setSelected(r)}
-              icon={{
-                url:
-                  'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-              }}
-            />
-          ))}
+  <Marker
+    key={r.id + r.date}
+    position={{
+      lat: r.lat,
+      lng: r.lng,
+    }}
+    onClick={() => setSelected(r)}
+    icon={{
+      url:
+        'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    }}
+  />
+))}
+``
         </GoogleMap>
       </LoadScript>
       </div>
@@ -590,7 +611,6 @@ select-none
                 text-lg
                 hover:text-slate-600
                 transition
-                touch-manipulation
 cursor-pointer
 select-none
                 "
@@ -657,7 +677,6 @@ select-none
                 py-3
                 rounded-2xl
                 font-bold
-                touch-manipulation
 cursor-pointer
 select-none
                 "
@@ -676,7 +695,6 @@ select-none
                 py-3
                 rounded-2xl
                 font-bold
-                touch-manipulation
 cursor-pointer
 select-none
                 "
@@ -745,13 +763,15 @@ select-none
               <button
                 onClick={reset}
                 className="text-slate-400 text-3xl
-                touch-manipulation
 cursor-pointer
 select-none"
               >
                 ✕
               </button>
             </div>
+            <p className="text-xs text-gray-500">
+  ※ タップで入力できます
+</p>
 
             <div
   className="
@@ -774,12 +794,9 @@ select-none"
                 px-4
                 py-4
                 outline-none
-                touch-manipulation
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
-                touch-auto
-pointer-events-auto
                 "
                 placeholder="魚種"
                 value={form.fishType}
@@ -804,12 +821,9 @@ pointer-events-auto
                 px-4
                 py-4
                 outline-none
-                touch-manipulation
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
-                touch-auto
-pointer-events-auto
                 "
                 value={form.date}
                 onChange={(e) =>
@@ -833,12 +847,9 @@ pointer-events-auto
                   px-4
                   py-4
                   outline-none
-                  touch-manipulation
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
-                  touch-auto
-pointer-events-auto
                   "
                   placeholder="サイズ"
                   value={form.size}
@@ -862,12 +873,9 @@ pointer-events-auto
                   px-4
                   py-4
                   outline-none
-                  touch-manipulation
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
-                  touch-auto
-pointer-events-auto
                   "
                   placeholder="重量"
                   value={form.weight}
@@ -891,12 +899,9 @@ pointer-events-auto
                   px-4
                   py-4
                   outline-none
-                  touch-manipulation
                   focus:ring-4
                   focus:ring-blue-200
                   focus:border-blue-500
-                  touch-auto
-pointer-events-auto
                   "
                   placeholder="水深"
                   value={form.depth}
@@ -922,12 +927,9 @@ pointer-events-auto
                 px-4
                 py-4
                 outline-none
-                touch-manipulation
                 focus:ring-4
                 focus:ring-blue-200
                 focus:border-blue-500
-                touch-auto
-pointer-events-auto
                 "
                 placeholder="仕掛け"
                 value={form.rig}
@@ -979,7 +981,6 @@ pointer-events-auto
                 py-4
                 rounded-2xl
                 font-bold
-                touch-manipulation
 cursor-pointer
 select-none
                 "
@@ -998,8 +999,7 @@ select-none
                 py-4
                 rounded-2xl
                 font-bold
-                shadow-xl
-                touch-manipulation
+                shadow-x
 cursor-pointer
 select-none
                 "
