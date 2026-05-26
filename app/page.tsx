@@ -540,7 +540,7 @@ select-none
 ))}
         </GoogleMap>
       </LoadScript>
-      <div className="fixed top-40 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
+      <div className="fixed top-18 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
   📍 タップでピン追加
 </div>
       </div>
