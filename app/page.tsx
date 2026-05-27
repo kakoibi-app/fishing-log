@@ -336,7 +336,7 @@ const privacyText = `
           lat: pos.lat,
           lng: pos.lng,
           userId: user.uid,
-          groupId: currentGroupId ?? null,
+          groupId: currentGroupId ? currentGroupId : null,
         });
       }
 
@@ -698,8 +698,7 @@ select-none
   <Marker
     key={r.id}
     position={{ lat: r.lat, lng: r.lng }}
-    onClick={(e) => {
-      e.domEvent.stopPropagation(); // ←追加（重要）
+    onClick={() => {
       setSelected(r);
     }}
     icon={{
@@ -1097,10 +1096,20 @@ select-none
               if (data.groupId === currentGroupId) return;
 
               const ref = doc(db, 'records', d.id);
-
+              const dData = d.data();
+              
               promises.push(
                 addDoc(collection(db, 'records'), {
-                  ...data,
+                  fishType: dData.fishType || '',
+                  size: dData.size || '',
+                  weight: dData.weight || '',
+                  depth: dData.depth || '',
+                  rig: dData.rig || '',
+                  comment: dData.comment || '',
+                  date: dData.date || '',
+                  lat: dData.lat,
+                  lng: dData.lng,
+                  userId: user.uid, // ←重要（コピーした人）
                   groupId: currentGroupId,
                 })
               );
