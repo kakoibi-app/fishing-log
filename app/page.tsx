@@ -23,6 +23,7 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { auth, db } from '../src/lib/firebase';
+import { orderBy } from 'firebase/firestore';
 
 type RecordType = {
   id: string;
@@ -243,7 +244,8 @@ const privacyText = `
     if (currentGroupId) {
       q = query(
         collection(db, 'records'),
-        where('groupId', '==', currentGroupId)
+        where('groupId', '==', currentGroupId),
+        orderBy('date', 'desc')
       );
     } else {
       q = query(
@@ -1097,13 +1099,20 @@ select-none
               const ref = doc(db, 'records', d.id);
 
               promises.push(
-                updateDoc(ref, {
+                addDoc(collection(db, 'records'), {
+                  ...data,
                   groupId: currentGroupId,
                 })
               );
             });
 
             await Promise.all(promises);
+  
+            setCurrentGroupId(null);
+            setTimeout(() => {
+              setCurrentGroupId(currentGroupId);
+            }, 0);
+
 
             alert('過去データをグループに共有した');
           }}
