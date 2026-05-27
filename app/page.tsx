@@ -2,6 +2,7 @@
 
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useEffect, useRef, useState } from 'react';
+
 import {
   collection,
   addDoc,
@@ -11,7 +12,10 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  onSnapshot,        
+  arrayUnion         
 } from 'firebase/firestore';
+
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -156,9 +160,37 @@ const privacyText = `
 
 お問い合わせ：kakoibi.official@gmail.com
 `;
-  const mapRef = useRef<google.maps.Map | null>(null);
+  const mapRef = useRef<any>(null);
 
   /* ===== Auth ===== */
+
+  useEffect(() => {
+  if (typeof window === 'undefined') return;
+  if (!user) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const inviteGroupId = params.get('group');
+
+  if (!inviteGroupId) return;
+
+  const join = async () => {
+    const ref = doc(db, 'groups', inviteGroupId);
+
+    try {
+      await updateDoc(ref, {
+        members: arrayUnion(user.uid),
+      });
+    } catch (e) {
+      console.error('join error', e);
+    }
+
+
+    setCurrentGroupId(inviteGroupId);
+    fetchGroups();
+  };
+
+  join();
+}, [user]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -192,63 +224,73 @@ const privacyText = `
     where('members', 'array-contains', user.uid)
   );
 
-  const snap = await getDocs(q);
+  const snap = await getDocs(q); // ←これが抜けてる
+
   const data: any[] = [];
-  snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
+  snap.forEach((d) =>
+    data.push({ id: d.id, ...(d.data() as any) })
+  );
+
+
   setGroups(data);
 };
 
-  const fetchRecords = async () => {
-  if (!user) return;
-
-  let q;
-
-  if (currentGroupId) {
-    q = query(
-      collection(db, 'records'),
-      where('groupId', '==', currentGroupId)
-    );
-  } else {
-    q = query(
-      collection(db, 'records'),
-      where('userId', '==', user.uid)
-    );
-  }
-
-  const snap = await getDocs(q);
-  let data: any[] = [];
-
-  snap.forEach((d) => data.push({ id: d.id, ...d.data() }));
-
-  const now = new Date();
-
-  if (filter === 'today') {
-    data = data.filter(
-      (r) =>
-        r.date &&
-        new Date(r.date).toDateString() === now.toDateString()
-    );
-  }
-
-  if (filter === 'week') {
-    data = data.filter(
-      (r) =>
-        r.date &&
-        now.getTime() - new Date(r.date).getTime() < 7 * 86400000
-    );
-  }
-
-  setRecords(data);
-};
-
   useEffect(() => {
-  fetchRecords();
-  fetchGroups(); // 追加
-}, [user, filter]);
+    if (!user) return;
 
-useEffect(() => {
-  fetchRecords();
-}, [currentGroupId]);
+    let q: any;
+
+    if (currentGroupId) {
+      q = query(
+        collection(db, 'records'),
+        where('groupId', '==', currentGroupId)
+      );
+    } else {
+      q = query(
+        collection(db, 'records'),
+        where('userId', '==', user.uid)
+      );
+    }
+
+    const unsub = onSnapshot(q, (snap: any) => {
+      let data: any[] = [];
+
+      snap.forEach((d: any) =>
+        data.push({ id: d.id, ...(d.data() as any) })
+      );
+
+      // ✅ ↓ここはそのまま「残す」
+      const now = new Date();
+
+      if (filter === 'today') {
+        data = data.filter(
+          (r) =>
+            r.date &&
+            new Date(r.date).toDateString() === now.toDateString()
+        );
+      }
+
+      if (filter === 'week') {
+        data = data.filter(
+          (r) =>
+            r.date &&
+            now.getTime() - new Date(r.date).getTime() < 7 * 86400000
+        );
+      }
+
+      setRecords(data);
+    });
+
+
+    return () => unsub();
+  }, [user, currentGroupId, filter]);
+
+
+  
+  useEffect(() => {
+    fetchGroups();
+  }, [user]);
+
 
 
   useEffect(() => {
@@ -310,7 +352,6 @@ useEffect(() => {
         });
       }
 
-      await fetchRecords();
     } catch (e) {
       console.error(e);
     }
@@ -325,7 +366,6 @@ useEffect(() => {
 
     await deleteDoc(doc(db, 'records', selected.id));
 
-    await fetchRecords();
 
     setSelected(null);
   };
@@ -354,6 +394,21 @@ useEffect(() => {
     setSelected(null);
     setForm(emptyForm);
   };
+
+  const getColor = (uid: string) => {
+  const colors = [
+    'blue',
+    'red',
+    'green',
+    'yellow',
+    'purple',
+  ];
+  let hash = 0;
+  for (let i = 0; i < uid.length; i++) {
+    hash += uid.charCodeAt(i);
+  }
+  return colors[hash % colors.length];
+};
 
   /* ===== Loading ===== */
 
@@ -571,14 +626,6 @@ select-none
       <option value="week">7日間</option>
     </select>
 
-    {/* 右（サイズ小さく） */}
-    <button
-      onClick={logout}
-      className="bg-red-500 text-white px-2 py-1 rounded-lg text-xs"
-    >
-      ログアウト
-    </button>
-
   </div>
 </div>
 
@@ -647,15 +694,11 @@ select-none
 
           {records.map((r) => (
   <Marker
-    key={r.id + r.date}
-    position={{
-      lat: r.lat,
-      lng: r.lng,
-    }}
+    key={r.id}
+    position={{ lat: r.lat, lng: r.lng }}
     onClick={() => setSelected(r)}
     icon={{
-      url:
-        'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      url: `https://maps.google.com/mapfiles/ms/icons/${getColor(r.userId)}-dot.png`,
     }}
   />
 ))}
@@ -1005,6 +1048,23 @@ select-none
       >
         ＋ グループ作成
       </button>
+
+        <button
+          className="w-full mb-3 bg-blue-100 p-2 rounded"
+          onClick={() => {
+            if (!currentGroupId) return alert('グループ選択して');
+
+            const url =
+              window.location.origin +
+              '?group=' +
+              currentGroupId;
+
+            navigator.clipboard.writeText(url);
+            alert('招待URLコピーした');
+          }}
+        >
+          招待リンクコピー
+        </button>
 
       {/* ログアウト */}
       <button
