@@ -696,7 +696,10 @@ select-none
   <Marker
     key={r.id}
     position={{ lat: r.lat, lng: r.lng }}
-    onClick={() => setSelected(r)}
+    onClick={(e) => {
+      e.domEvent.stopPropagation(); // ←追加（重要）
+      setSelected(r);
+    }}
     icon={{
       url: `https://maps.google.com/mapfiles/ms/icons/${getColor(r.userId)}-dot.png`,
     }}
@@ -1064,6 +1067,48 @@ select-none
           }}
         >
           招待リンクコピー
+        </button>
+
+        <button
+          className="w-full mb-3 bg-green-100 p-2 rounded"
+          onClick={async () => {
+            if (!confirm('過去のピンを全てグループに共有しますか？')) return;
+
+            if (!currentGroupId || !user) {
+              alert('グループ選択して');
+              return;
+            }
+
+            const q = query(
+              collection(db, 'records'),
+              where('userId', '==', user.uid)
+            );
+
+            const snap = await getDocs(q);
+
+            const promises: Promise<any>[] = [];
+
+            snap.forEach((d) => {
+              const data = d.data();
+
+              // すでにグループに入ってるものはスキップ
+              if (data.groupId === currentGroupId) return;
+
+              const ref = doc(db, 'records', d.id);
+
+              promises.push(
+                updateDoc(ref, {
+                  groupId: currentGroupId,
+                })
+              );
+            });
+
+            await Promise.all(promises);
+
+            alert('過去データをグループに共有した');
+          }}
+        >
+          過去ピンを共有
         </button>
 
       {/* ログアウト */}
