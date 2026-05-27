@@ -698,7 +698,8 @@ select-none
   <Marker
     key={r.id}
     position={{ lat: r.lat, lng: r.lng }}
-    onClick={() => {
+    onClick={(e: any) => {
+      if (e?.domEvent) e.domEvent.stopPropagation();
       setSelected(r);
     }}
     icon={{
@@ -1109,19 +1110,13 @@ select-none
                   date: dData.date || '',
                   lat: dData.lat,
                   lng: dData.lng,
-                  userId: user.uid, // ←重要（コピーした人）
+                  userId: dData.userId, // ←重要（コピーした人）
                   groupId: currentGroupId,
                 })
               );
             });
 
             await Promise.all(promises);
-  
-            setCurrentGroupId(null);
-            setTimeout(() => {
-              setCurrentGroupId(currentGroupId);
-            }, 0);
-
 
             alert('過去データをグループに共有した');
           }}
