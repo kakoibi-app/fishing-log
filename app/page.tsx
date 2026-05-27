@@ -244,8 +244,7 @@ const privacyText = `
     if (currentGroupId) {
       q = query(
         collection(db, 'records'),
-        where('groupId', '==', currentGroupId),
-        orderBy('date', 'desc')
+        where('groupId', '==', currentGroupId)
       );
     } else {
       q = query(
