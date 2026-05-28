@@ -633,20 +633,32 @@ select-none
 
       {/* ===== Google Map ===== */}
     
-    {!mode && (
+    
+{!mode && (
+
+  <>
+    {/* ✅ ① 透明レイヤー（Mapの上にかぶせる） */}
+    {(menuOpen || selected) && (
       <div
-        className="relative z-0 touch-auto"
-        style={{
-          pointerEvents:
-            selected || menuOpen || mode
-              ? 'none'
-              : 'auto',
-          touchAction:
-            selected || menuOpen || mode
-              ? 'none'
-              : 'manipulation',
-        }}
-      >
+        className="fixed inset-0 z-10"
+      />
+    )}
+
+    {/* ✅ ② Map本体 */}
+    <div
+      className="relative z-0 touch-auto"
+      style={{
+        pointerEvents:
+          selected || menuOpen || mode
+            ? 'none'
+            : 'auto',
+        touchAction:
+          selected || menuOpen || mode
+            ? 'none'
+            : 'manipulation',
+      }}
+    >
+
 
       <LoadScript
         googleMapsApiKey={
@@ -733,6 +745,7 @@ select-none
   📍 MAPの任意の位置タップでピン追加
 </div>
       </div>
+      </>
       )}
 
       {/* ===== Selected Card ===== */}
