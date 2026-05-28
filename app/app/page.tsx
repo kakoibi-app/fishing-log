@@ -644,7 +644,7 @@ select-none
           touchAction:
             selected || menuOpen || mode
               ? 'none'
-              : 'pan-x pan-y',
+              : 'manipulation',
         }}
       >
 
