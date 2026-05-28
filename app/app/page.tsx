@@ -632,17 +632,21 @@ select-none
 
 
       {/* ===== Google Map ===== */}
+    
     {!mode && (
-  
-    <div
-      className="relative z-0 touch-auto"
-      style={{
-        pointerEvents:
-          selected || menuOpen || mode
-            ? 'none'
-            : 'auto',
-      }}
-    >
+      <div
+        className="relative z-0 touch-auto"
+        style={{
+          pointerEvents:
+            selected || menuOpen || mode
+              ? 'none'
+              : 'auto',
+          touchAction:
+            selected || menuOpen || mode
+              ? 'none'
+              : 'pan-x pan-y',
+        }}
+      >
 
       <LoadScript
         googleMapsApiKey={
