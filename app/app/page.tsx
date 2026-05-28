@@ -633,7 +633,17 @@ select-none
 
       {/* ===== Google Map ===== */}
     {!mode && (
-  <div className="relative z-0 touch-manipulation">
+  
+    <div
+      className="relative z-0 touch-auto"
+      style={{
+        pointerEvents:
+          selected || menuOpen || mode
+            ? 'none'
+            : 'auto',
+      }}
+    >
+
       <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
@@ -684,6 +694,7 @@ select-none
     gestureHandling: 'greedy',
     keyboardShortcuts: false,
     draggable: true,
+    disableDoubleClickZoom: true,
     minZoom: 3,
     styles: [
       {
