@@ -26,15 +26,7 @@ export default function Landing() {
           釣果や釣り場を地図で記録できるサービスです。
         </p>
 
-        <div className="my-8">
-          <ins
-            className="adsbygoogle"
-            style={{ display: 'block' }}
-            data-ad-client="ca-pub-6308667358686884"
-            data-ad-slot="XXXXXXXX"
-            data-ad-format="auto"
-          />
-        </div>
+        
         <section className="mt-10 max-w-xl mx-auto text-left space-y-6">
 
         <div>
@@ -79,6 +71,15 @@ export default function Landing() {
           >
             アプリを使う
           </a>
+        </div>
+        <div className="my-8">
+          <ins
+            className="adsbygoogle"
+            style={{ display: 'block', minHeight: '100px' }}
+            data-ad-client="ca-pub-6308667358686884"
+            data-ad-slot="XXXXXXXX"
+            data-ad-format="auto"
+          />
         </div>
 
         <div className="text-xs mt-10 text-center space-x-4">
