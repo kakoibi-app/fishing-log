@@ -633,7 +633,7 @@ select-none
 
       {/* ===== Google Map ===== */}
     {!mode && (
-  <div className="relative z-0 touch-auto">
+  <div className="relative z-0 touch-none">
       <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
@@ -682,7 +682,7 @@ select-none
     fullscreenControl: false,
     clickableIcons: false,
     gestureHandling: 'greedy',
-    draggableCursor: 'auto',
+    keyboardShortcuts: false,
     minZoom: 3,
     styles: [
       {
