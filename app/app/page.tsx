@@ -698,8 +698,7 @@ select-none
   <Marker
     key={r.id}
     position={{ lat: r.lat, lng: r.lng }}
-    onClick={(e: any) => {
-      if (e?.domEvent) e.domEvent.stopPropagation();
+    onClick={() => {
       setSelected(r);
     }}
     icon={{
