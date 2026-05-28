@@ -22,7 +22,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from 'firebase/auth';
-import { auth, db } from '../src/lib/firebase';
+import { auth, db } from '../../src/lib/firebase';
 import { orderBy } from 'firebase/firestore';
 
 type RecordType = {
