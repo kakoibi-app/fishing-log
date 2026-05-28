@@ -633,7 +633,7 @@ select-none
 
       {/* ===== Google Map ===== */}
     {!mode && (
-  <div className="relative z-0 touch-pan-x touch-pan-y">
+  <div className="relative z-0 touch-auto">
       <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
@@ -682,6 +682,7 @@ select-none
     fullscreenControl: false,
     clickableIcons: false,
     gestureHandling: 'greedy',
+    draggableCursor: 'auto',
     minZoom: 3,
     styles: [
       {
@@ -722,7 +723,7 @@ select-none
       {/* ===== Selected Card ===== */}
 
       {selected && (
-        <div className="absolute bottom-6 left-4 right-4 z-30">
+        <div className="fixed bottom-6 left-4 right-4 z-50">
           <div className="
           rounded-[32px]
           bg-white/95
