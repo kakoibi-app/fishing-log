@@ -642,15 +642,15 @@ select-none
 
       {/* ===== Google Map ===== */}
     
-    
-  {!mode && !menuOpen && !selected && (
-
-    <div className="relative z-0">
-      <LoadScript
+    <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
         }
       >
+  {!mode && !menuOpen && !selected && (
+
+    <div className="relative z-0">
+      
         <GoogleMap
           mapContainerStyle={mapStyle}
           center={mapCenter}
@@ -720,7 +720,7 @@ select-none
           ))}
 
         </GoogleMap>
-      </LoadScript>
+      
 
       {/* ↓これも残すOK */}
       <div className="w-full px-2 py-2 bg-white">
@@ -733,6 +733,7 @@ select-none
 
     </div>
   )}
+  </LoadScript>
 
       {/* ===== Selected Card ===== */}
 
