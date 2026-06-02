@@ -599,6 +599,15 @@ select-none
 
 
   return (
+    <>
+        {/* ✅ style */}
+        <style jsx global>{`
+          .map-disabled .gm-style {
+            pointer-events: none !important;
+          }
+        `}</style>
+
+
     <div className="relative h-screen overflow-visible bg-black">
       {/* ===== Header ===== */}
 
@@ -645,19 +654,13 @@ select-none
     )}
 
     {/* ✅ ② Map本体 */}
+    
     <div
-      className="relative z-0 touch-auto"
-      style={{
-        pointerEvents:
-          selected || menuOpen || mode
-            ? 'none'
-            : 'auto',
-        touchAction:
-          selected || menuOpen || mode
-            ? 'none'
-            : 'manipulation',
-      }}
+      className={`relative z-0 touch-auto ${
+        selected || menuOpen || mode ? 'map-disabled' : ''
+      }`}
     >
+
 
 
       <LoadScript
@@ -1164,6 +1167,7 @@ select-none
 )}
 
     </div>
+    </>
   );
   
 }
