@@ -643,113 +643,96 @@ select-none
       {/* ===== Google Map ===== */}
     
     
-{!mode && (
+  {!mode && !menuOpen && !selected && (
 
-  <>
-    {/* ✅ ① 透明レイヤー（Mapの上にかぶせる） */}
-    {(menuOpen || selected) && (
-      <div
-        className="fixed inset-0 z-10"
-      />
-    )}
-
-    {/* ✅ ② Map本体 */}
-    
-    <div
-      className={`relative z-0 touch-auto ${
-        selected || menuOpen || mode ? 'map-disabled' : ''
-      }`}
-    >
-
-
-
+    <div className="relative z-0">
       <LoadScript
         googleMapsApiKey={
           process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!
         }
       >
         <GoogleMap
-  mapContainerStyle={mapStyle}
-  center={mapCenter}
-  zoom={zoom}
-  onLoad={(map) => {
-    mapRef.current = map;
-  }}
-  onClick={handleMapClick}
-  onIdle={() => {
-    if (!mapRef.current) return;
+          mapContainerStyle={mapStyle}
+          center={mapCenter}
+          zoom={zoom}
+          onLoad={(map) => {
+            mapRef.current = map;
+          }}
+          onClick={handleMapClick}
+          onIdle={() => {
+            if (!mapRef.current) return;
 
-    const center = mapRef.current.getCenter();
+            const center = mapRef.current.getCenter();
+            if (!center) return;
 
-    if (!center) return;
+            const newCenter = {
+              lat: center.lat(),
+              lng: center.lng(),
+            };
 
-    const newCenter = {
-      lat: center.lat(),
-      lng: center.lng(),
-    };
+            const newZoom = mapRef.current.getZoom() || 9;
 
-    const newZoom = mapRef.current.getZoom() || 9;
+            setMapCenter(newCenter);
+            setZoom(newZoom);
 
-    setMapCenter(newCenter);
-    setZoom(newZoom);
+            localStorage.setItem(
+              'map-center',
+              JSON.stringify(newCenter)
+            );
 
-    localStorage.setItem(
-      'map-center',
-      JSON.stringify(newCenter)
-    );
-
-    localStorage.setItem(
-      'map-zoom',
-      String(newZoom)
-    );
-  }}
-  options={{
-    disableDefaultUI: true,
-    zoomControl: true,
-    streetViewControl: false,
-    mapTypeControl: false,
-    fullscreenControl: false,
-    clickableIcons: false,
-    gestureHandling: 'greedy',
-    keyboardShortcuts: false,
-    draggable: true,
-    disableDoubleClickZoom: true,
-    minZoom: 3,
-    styles: [
-      {
-        featureType: 'poi',
-        stylers: [{ visibility: 'off' }],
-      },
-    ],
-  }}
->
-
+            localStorage.setItem(
+              'map-zoom',
+              String(newZoom)
+            );
+          }}
+          options={{
+            disableDefaultUI: true,
+            zoomControl: true,
+            streetViewControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+            clickableIcons: false,
+            gestureHandling: 'greedy',
+            keyboardShortcuts: false,
+            draggable: true,
+            disableDoubleClickZoom: true,
+            minZoom: 3,
+            styles: [
+              {
+                featureType: 'poi',
+                stylers: [{ visibility: 'off' }],
+              },
+            ],
+          }}
+        >
 
           {records.map((r) => (
-  <Marker
-    key={r.id}
-    position={{ lat: r.lat, lng: r.lng }}
-    onClick={() => {
-      setSelected(r);
-    }}
-    icon={{
-      url: `https://maps.google.com/mapfiles/ms/icons/${getColor(r.userId)}-dot.png`,
-    }}
-  />
-))}
+            <Marker
+              key={r.id}
+              position={{ lat: r.lat, lng: r.lng }}
+              onClick={() => {
+                setSelected(r);
+              }}
+              icon={{
+                url: `https://maps.google.com/mapfiles/ms/icons/${getColor(r.userId)}-dot.png`,
+              }}
+            />
+          ))}
+
         </GoogleMap>
       </LoadScript>
-      
+
+      {/* ↓これも残すOK */}
       <div className="w-full px-2 py-2 bg-white">
         <AdBanner />
       </div>
 
       <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-white/90 text-gray-700 px-3 py-1.5 rounded-full text-xs shadow">
-  📍 MAPの任意の位置タップでピン追加
-</div>
+        📍 MAPの任意の位置タップでピン追加
       </div>
-      </>
-      )}
+
+    </div>
+  )}
 
       {/* ===== Selected Card ===== */}
 
